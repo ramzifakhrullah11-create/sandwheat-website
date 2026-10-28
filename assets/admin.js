@@ -12,7 +12,7 @@
     aboutStory: "SANDWHEAT adalah usaha sandwich berbahan roti gandum yang dikembangkan oleh mahasiswa untuk mahasiswa.",
     contactPhone: "08118481107",
     contactWhatsapp: "628118481107",
-    businessInfo: "Jalan Babadan, Yogyakarta",
+    contactBusiness: "Jalan Babadan, Yogyakarta",
     primaryColor: "#75C9E7",
     secondaryColor: "#238B57",
     accentColor: "#F4D35E",
@@ -99,10 +99,10 @@
     if (flag && message) setStatus("loading", message);
   }
 
-  function toggleLoginScreen(showLogin) {
+  function toggleLoginScreen(showApp) {
     if (!els.appRoot || !els.loginScreen) return;
-    els.appRoot.hidden = !showLogin ? false : true;
-    els.loginScreen.hidden = !showLogin;
+    els.appRoot.hidden = !showApp;
+    els.loginScreen.hidden = showApp;
   }
 
   function updateView(nextView) {
@@ -276,7 +276,7 @@
         </div>
       </div>
     `;
-    els.previewFrame.innerHTML = preview;
+    if (els.previewFrame) els.previewFrame.innerHTML = preview;
   }
 
   async function apiRequest(action, payload = {}, method = "POST") {
@@ -294,6 +294,7 @@
     const init = {
       method,
       headers,
+      mode: "cors",
       cache: "no-store"
     };
 
@@ -312,33 +313,38 @@
 
   async function validateSession() {
     const token = readToken();
-    if (!token) return false;
+    if (!token) {
+      state.sessionValid = false;
+      return false;
+    }
 
-    const actions = ["checkSession", "session", "validateSession", "whoami"];
+    const actions = ["checkSession", "session", "validateSession", "whoami", "cmsSettings"];
     for (const action of actions) {
       try {
         const result = await apiRequest(action, {}, "GET");
-        if (result && (result.ok === true || result.valid === true || result.authenticated === true || result.session === "valid" || result.user)) {
+        const ok = Boolean(
+          result && (
+            result.ok === true ||
+            result.valid === true ||
+            result.authenticated === true ||
+            result.session === "valid" ||
+            result.user ||
+            (action === "cmsSettings" && (result.settings || result.data))
+          )
+        );
+
+        if (ok) {
           state.sessionValid = true;
           return true;
         }
-        if (result && (result.error || result.message || result.code)) {
-          const normalized = String(result.error || result.message || result.code).toLowerCase();
-          if (normalized.includes("invalid") || normalized.includes("expired") || normalized.includes("forbidden")) break;
+
+        const errorText = String(result?.error || result?.message || result?.code || "").toLowerCase();
+        if (errorText.includes("invalid") || errorText.includes("expired") || errorText.includes("forbidden") || errorText.includes("unauthorized")) {
+          break;
         }
       } catch (error) {
-        // ignore and try the next fallback
+        // ignore and continue checking
       }
-    }
-
-    try {
-      const result = await apiRequest("cmsSettings", {}, "GET");
-      if (result && (result.ok === true || result.settings || result.data)) {
-        state.sessionValid = true;
-        return true;
-      }
-    } catch (error) {
-      // if fallback fails, session is not trusted
     }
 
     state.sessionValid = false;
@@ -483,7 +489,7 @@
       if (!verified) throw new Error("Backend belum mengonfirmasi sesi yang valid.");
 
       state.sessionValid = true;
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       setStatus("success", "Login berhasil.");
       await loadSiteData();
     } catch (error) {
@@ -541,7 +547,7 @@
     renderProducts();
     updateView("dashboard");
 
-    toggleLoginScreen(true);
+    toggleLoginScreen(false);
     setStatus("success", "Panel siap. Silakan login admin.");
 
     const token = readToken();
@@ -552,17 +558,17 @@
       const valid = await validateSession();
       if (!valid) {
         clearSession();
-        toggleLoginScreen(true);
+        toggleLoginScreen(false);
         setStatus("error", "Sesi kedaluwarsa atau tidak valid. Silakan login kembali.");
         return;
       }
       state.sessionValid = true;
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       setStatus("success", "Sesi valid. Dashboard aktif.");
       await loadSiteData();
     } catch (error) {
       clearSession();
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       setStatus("error", `Validasi sesi gagal: ${error.message}`);
     } finally {
       setLoading(false, "");
