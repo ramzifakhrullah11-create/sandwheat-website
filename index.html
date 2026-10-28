@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#f7f4e9" />
-  <title>SANDWHEAT — Good Bites, On the Go.</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#f7f4e9"><title>SANDWHEAT — Good Bites, On the Go.</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
-    :root{
-      --cream:#f7f4e9; --olive:#526344; --olive2:#35452f; --sage:#dce3d1; --brown:#b68b5c;
-      --ink:#22291f; --muted:#70766a; --white:#fffefa; --line:#e5e3d8; --shadow:0 18px 50px rgba(48,58,37,0.1);
-    }
-    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink)}
-    img{max-width:100%;display:block} a{text-decoration:none;color:inherit} button,input,select,textarea{font:inherit}
+    :root{--cream:#f7f4e9;--olive:#526344;--olive2:#35452f;--sage:#dce3d1;--brown:#b68b5c;--ink:#22291f;--muted:#70766a;--white:#fffefa;--line:#e5e3d8;--shadow:0 18px 50px rgba(48,58,37,0.1)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink)}img{max-width:100%;display:block}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}
     .announcement{background:#243024;color:#f5f4f0;text-align:center;padding:10px 16px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;overflow:hidden}
     .wrap{width:min(1160px,calc(100% - 44px));margin:0 auto}
     .nav{position:sticky;top:0;z-index:20;background:rgba(247,244,233,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -22,511 +15,90 @@
     .brand-text{display:flex;flex-direction:column;line-height:1.05}
     .brand-text small{font-size:10px;letter-spacing:.2em;color:var(--muted);margin-top:2px}
     .navlinks{display:flex;align-items:center;gap:26px;color:var(--olive2);font-weight:600}
-    .navlinks a{opacity:.86} .navlinks a:hover{opacity:1}
-    .nav-cta{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--white);color:var(--olive2);padding:10px 18px;border-radius:999px;font-weight:700}
+    .navlinks a{opacity:.86}.navlinks a:hover{opacity:1}.nav-cta{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--white);color:var(--olive2);padding:10px 18px;border-radius:999px;font-weight:700}
     .hero{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:50px;padding:72px 0 42px}
     .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--olive);font-weight:700}
-    h1,h2,h3{margin:0;line-height:1.08;font-family:'Playfair Display',serif}
-    .hero-copy h1{font-size:clamp(3rem,5vw,5rem);margin-top:18px}
-    .hero-copy h1 em{font-style:normal;color:var(--olive)}
-    .muted{color:var(--muted);line-height:1.7}
-    .hero-copy .muted{font-size:1.05rem;max-width:560px;margin:18px 0 24px}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border:none;border-radius:999px;background:var(--olive2);color:#fff;font-weight:700;cursor:pointer;transition:.2s ease}
-    .btn:hover{transform:translateY(-1px)} .btn.outline{background:transparent;border:1px solid var(--olive2);color:var(--olive2)}
-    .hero-meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:28px}
-    .hero-meta div{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--line);background:rgba(255,255,255,.35);border-radius:16px;min-width:140px}
-    .hero-meta strong{font-size:1.4rem}
-    .hero-meta span{color:var(--muted);font-size:.85rem}
+h1,h2,h3{margin:0;line-height:1.08;font-family:'Playfair Display',serif}.hero-copy h1{font-size:clamp(3rem,5vw,5rem);margin-top:18px}.hero-copy h1 em{font-style:normal;color:var(--olive)}.muted{color:var(--muted);line-height:1.7}.hero-copy .muted{font-size:1.05rem;max-width:560px;margin:18px 0 24px}.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 26px;border:none;border-radius:999px;background:var(--olive2);color:#fff;font-weight:700;cursor:pointer;transition:.2s ease}.btn:hover{transform:translateY(-1px)}.btn.outline{background:transparent;border:1px solid var(--olive2);color:var(--olive2)}.hero-meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:28px}.hero-meta div{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--line);background:rgba(255,255,255,.35);border-radius:16px;min-width:140px}.hero-meta strong{font-size:1.4rem}.hero-meta span{color:var(--muted);font-size:.85rem}
     .hero-visual{position:relative;border-radius:28px;overflow:hidden;min-height:520px;background:linear-gradient(180deg,#dfe9d4,#cfe1d0);box-shadow:var(--shadow)}
-    .hero-visual img{width:100%;height:100%;object-fit:cover}
-    .hero-card{position:absolute;right:22px;bottom:22px;max-width:240px;padding:18px;border-radius:18px;background:rgba(255,255,255,.82);backdrop-filter:blur(8px);box-shadow:var(--shadow)}
-    .hero-card b{display:block;margin-bottom:4px;font-size:1.1rem}.hero-card span{color:var(--muted);font-size:.82rem}
-    .benefits{background:#e7eadf;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-    .benefit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:28px 0 34px}
-    .benefit{display:flex;align-items:flex-start;gap:14px;padding:18px;background:rgba(255,255,255,.45);border:1px solid rgba(82,99,68,.15);border-radius:18px}
-    .benefit-icon{width:46px;height:46px;border-radius:12px;background:#f0efe7;display:grid;place-items:center;font-size:1.6rem}
-    .benefit b,.benefit span{display:block}.benefit span{color:var(--muted);font-size:.9rem;margin-top:4px}
-    .section{padding:88px 0}
-    .section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:32px}
-    .section-head h2{font-size:clamp(2.2rem,4vw,3.3rem)}
-    .section-head .muted{max-width:500px}
-    .product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-    .product{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
-    .product-image{height:220px;overflow:hidden}
-    .product-image img{width:100%;height:100%;object-fit:cover}
-    .product-body{padding:22px 20px 18px}
-    .product-body b{font-size:1.2rem}
-    .product-body p{color:var(--muted);line-height:1.6;margin:8px 0 16px}
-    .product-meta{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .price{font-weight:800;color:var(--olive2);font-size:1.3rem}
-    .tag{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;background:#eef5ed;color:var(--olive2);font-size:.8rem;font-weight:700}
-    .custom-section{background:#eff4ee}
-    .custom-layout,.checkout-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:26px}
-    .builder-card,.summary-box,.checkout-card,.contact-card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
-    .builder-card{padding:22px}
-    .field-group{padding-top:18px;border-top:1px solid var(--line);margin-top:18px}
-    .field-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}
-    .field-title b{font-size:1rem}.field-title span{color:var(--muted);font-size:.84rem}
-    .choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-    .choice{padding:14px 12px;border-radius:16px;border:1px solid var(--line);background:#f9f9f5;color:var(--ink);font-weight:700;text-align:left;cursor:pointer}
-    .choice.selected{border-color:var(--olive2);background:rgba(82,99,68,.12)}
-    .checkrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-    .checkpill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:600}
-    .checkpill input{accent-color:var(--olive2)}
-    .builder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-    .inline-label{display:block;font-weight:700;margin-bottom:8px}.builder-grid select,.builder-grid input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
-    .qty{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:#fff}
-    .qty button{width:28px;height:28px;border:none;border-radius:50%;background:#edf2eb;color:var(--olive2);font-size:1.4rem;cursor:pointer}
-    .builder-bottom{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
-    .live-total small{display:block;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-size:11px}
-    .live-total strong{display:block;font-size:2rem;margin-top:6px}
-    .summary-box{padding:20px}
-    .summary-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-    .summary-count{color:var(--muted)}
-    #orderItems{display:grid;gap:12px}
-    .order-item{display:flex;justify-content:space-between;gap:18px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fafaf8}
-    .order-item strong{display:block;margin-bottom:4px}.order-item small{color:var(--muted)}
-    .order-actions{display:flex;align-items:center;gap:8px}.order-actions button{border:none;background:#edf2eb;color:var(--olive2);border-radius:8px;padding:8px 10px;cursor:pointer}
-    .empty-state{padding:22px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center;background:#fbfaf7}
-    .checkout{padding-top:32px;padding-bottom:88px}.checkout-card{padding:22px}
-    form{display:grid;gap:18px}
-    .checkout-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.checkout-grid .full{grid-column:1/-1}
-    .checkout-grid input,.checkout-grid select,.checkout-grid textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}
-    .checkout-grid textarea{min-height:90px;resize:vertical}
-    .payment-row{display:flex;flex-wrap:wrap;gap:12px}
-    .payment-row label{display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:10px 12px;border-radius:12px;background:#fff}
-    .payment-row input{accent-color:var(--olive2)}
-    .notice{display:none;padding:12px 14px;border-radius:12px;background:#fff2e9;color:#8f5226;border:1px solid #efd0a8}
-    .notice.show{display:block}
-    .final-confirmation{margin-top:20px;padding:18px;border-radius:16px;background:#edf6ef;border:1px solid #cfe6d1;display:none}
-    .final-confirmation.show{display:block}
-    .about{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:30px}
-    .about-image{border-radius:26px;overflow:hidden;box-shadow:var(--shadow)}
-    .about-copy p{color:var(--muted);line-height:1.8}
-    .contact-band{background:#203520;color:#f6f9f6;padding:88px 0}
-    .contact-inner{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center}
-    .contact-band h2{font-size:clamp(2.4rem,4vw,3.4rem)}
-    .contact-band p{color:rgba(255,255,255,.75);line-height:1.7}
-    .contact-card{padding:24px;background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.12)}
-    .contact-meta{display:grid;gap:14px;margin-top:18px}
-    .meta{display:flex;flex-direction:column;gap:6px}
-    .meta span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.68)}
-    .meta strong{font-size:1.3rem}
-    .footer{background:#1d291f;color:#edf4ee;padding:36px 0 50px}
-    .footer-top{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.12)}
-    .footer-nav{display:flex;gap:18px;flex-wrap:wrap;color:rgba(255,255,255,.76)}
-    .footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:18px;color:rgba(255,255,255,.72)}
-    .toast{position:fixed;right:18px;bottom:24px;background:rgba(29,41,31,.92);color:#fff;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);transition:.2s ease;pointer-events:none}
-    .toast.show{opacity:1;transform:translateY(0)}
-    @media(max-width:960px){.hero,.about,.contact-inner,.custom-layout,.checkout-layout{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,1fr)}.benefit-grid{grid-template-columns:repeat(2,1fr)}.navlinks{display:none}} 
-    @media(max-width:620px){.wrap{width:min(100% - 28px,500px)}.announcement{letter-spacing:.12em}.nav-inner{height:70px}.hero{padding-top:40px}.product-grid,.benefit-grid,.choice-grid,.checkout-grid,.builder-grid{grid-template-columns:1fr}.hero-copy h1{font-size:2.7rem}.footer-top,.footer-bottom{flex-direction:column;align-items:flex-start}} 
+    .hero-visual img{width:100%;height:100%;object-fit:cover}.hero-card{position:absolute;right:22px;bottom:22px;max-width:240px;padding:18px;border-radius:18px;background:rgba(255,255,255,.82);backdrop-filter:blur(8px);box-shadow:var(--shadow)}.hero-card b{display:block;margin-bottom:4px;font-size:1.1rem}.hero-card span{color:var(--muted);font-size:.82rem}
+    .benefits{background:#e7eadf;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.benefit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:28px 0 34px}.benefit{display:flex;align-items:flex-start;gap:14px;padding:18px;background:rgba(255,255,255,.45);border:1px solid rgba(82,99,68,.15);border-radius:18px}.benefit-icon{width:46px;height:46px;border-radius:12px;background:#f0efe7;display:grid;place-items:center;font-size:1.6rem}.benefit b,.benefit span{display:block}.benefit span{color:var(--muted);font-size:.9rem;margin-top:4px}
+    .section{padding:88px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:32px}.section-head h2{font-size:clamp(2.2rem,4vw,3.3rem)}.section-head .muted{max-width:500px}
+    .product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.product{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}.product-image{height:220px;overflow:hidden}.product-image img{width:100%;height:100%;object-fit:cover}.product-body{padding:22px 20px 18px}.product-body b{font-size:1.2rem}.product-body p{color:var(--muted);line-height:1.6;margin:8px 0 16px}.product-meta{display:flex;justify-content:space-between;align-items:center;gap:12px}.price{font-weight:800;color:var(--olive2);font-size:1.3rem}.tag{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;background:#eef5ed;color:var(--olive2);font-size:.8rem;font-weight:700}
+    .custom-section{background:#eff4ee}.custom-layout,.checkout-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:26px}.builder-card,.summary-box,.checkout-card,.contact-card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}.builder-card{padding:22px}.field-group{padding-top:18px;border-top:1px solid var(--line);margin-top:18px}.field-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}.field-title b{font-size:1rem}.field-title span{color:var(--muted);font-size:.84rem}.choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.choice{padding:14px 12px;border-radius:16px;border:1px solid var(--line);background:#f9f9f5;color:var(--ink);font-weight:700;text-align:left;cursor:pointer}.choice.selected{border-color:var(--olive2);background:rgba(82,99,68,.12)}.checkrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}.checkpill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:600}.checkpill input{accent-color:var(--olive2)}.builder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.inline-label{display:block;font-weight:700;margin-bottom:8px}.builder-grid select,.builder-grid input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}.qty{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:#fff}.qty button{width:28px;height:28px;border:none;border-radius:50%;background:#edf2eb;color:var(--olive2);font-size:1.4rem;cursor:pointer}.builder-bottom{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}.live-total small{display:block;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-size:11px}.live-total strong{display:block;font-size:2rem;margin-top:6px}.summary-box{padding:20px}.summary-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.summary-count{color:var(--muted)}#orderItems{display:grid;gap:12px}.order-item{display:flex;justify-content:space-between;gap:18px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fafaf8}.order-item strong{display:block;margin-bottom:4px}.order-item small{color:var(--muted)}.order-actions{display:flex;align-items:center;gap:8px}.order-actions button{border:none;background:#edf2eb;color:var(--olive2);border-radius:8px;padding:8px 10px;cursor:pointer}.empty-state{padding:22px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center;background:#fbfaf7}.checkout{padding-top:32px;padding-bottom:88px}.checkout-card{padding:22px}form{display:grid;gap:18px}.checkout-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.checkout-grid .full{grid-column:1/-1}.checkout-grid input,.checkout-grid select,.checkout-grid textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}.checkout-grid textarea{min-height:90px;resize:vertical}.payment-row{display:flex;flex-wrap:wrap;gap:12px}.payment-row label{display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:10px 12px;border-radius:12px;background:#fff}.payment-row input{accent-color:var(--olive2)}.notice{display:none;padding:12px 14px;border-radius:12px;background:#fff2e9;color:#8f5226;border:1px solid #efd0a8}.notice.show{display:block}.final-confirmation{margin-top:20px;padding:18px;border-radius:16px;background:#edf6ef;border:1px solid #cfe6d1;display:none}.final-confirmation.show{display:block}.about{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:30px}.about-image{border-radius:26px;overflow:hidden;box-shadow:var(--shadow)}.about-copy p{color:var(--muted);line-height:1.8}.contact-band{background:#203520;color:#f6f9f6;padding:88px 0}.contact-inner{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center}.contact-band h2{font-size:clamp(2.4rem,4vw,3.4rem)}.contact-band p{color:rgba(255,255,255,.75);line-height:1.7}.contact-card{padding:24px;background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.12)}.contact-meta{display:grid;gap:14px;margin-top:18px}.meta{display:flex;flex-direction:column;gap:6px}.meta span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.68)}.meta strong{font-size:1.3rem}.footer{background:#1d291f;color:#edf4ee;padding:36px 0 50px}.footer-top{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.12)}.footer-nav{display:flex;gap:18px;flex-wrap:wrap;color:rgba(255,255,255,.76)}.footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:18px;color:rgba(255,255,255,.72)}.toast{position:fixed;right:18px;bottom:24px;background:rgba(29,41,31,.92);color:#fff;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);transition:.2s ease;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:960px){.hero,.about,.contact-inner,.custom-layout,.checkout-layout{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,1fr)}.benefit-grid{grid-template-columns:repeat(2,1fr)}.navlinks{display:none}}
+    @media(max-width:620px){.wrap{width:min(100% - 28px,500px)}.announcement{letter-spacing:.12em}.nav-inner{height:70px}.hero{padding-top:40px}.product-grid,.benefit-grid,.choice-grid,.checkout-grid,.builder-grid{grid-template-columns:1fr}.hero-copy h1{font-size:2.7rem}.footer-top,.footer-bottom{flex-direction:column;align-items:flex-start}}
   </style>
 </head>
 <body>
   <div class="announcement">FRESHLY MADE · WHOLE WHEAT GOODNESS · GOOD FOR YOUR EVERYDAY</div>
-  <header class="nav">
-    <div class="wrap nav-inner">
-      <a class="brand" href="#home">
-        <span class="brand-mark">S</span>
-        <span class="brand-text">SANDWHEAT<small>GOOD BITES, ON THE GO.</small></span>
-      </a>
-      <nav class="navlinks" aria-label="Main navigation">
-        <a href="#home">Home</a>
-        <a href="#menu">Menu</a>
-        <a href="#builder">Build Your Meal</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <a class="nav-cta" href="#builder">Order now</a>
-    </div>
-  </header>
-
+  <header class="nav"><div class="wrap nav-inner"><a class="brand" href="#home"><span class="brand-mark">S</span><span class="brand-text">SANDWHEAT<small>GOOD BITES, ON THE GO.</small></span></a><nav class="navlinks" aria-label="Main navigation"><a href="#home">Home</a><a href="#menu">Menu</a><a href="#builder">Build Your Meal</a><a href="#about">About</a><a href="#contact">Contact</a></nav><a class="nav-cta" href="#builder">Order now</a></div></header>
   <main id="home">
     <section class="wrap hero">
-      <div class="hero-copy">
-        <div class="eyebrow">A fresh take on everyday eating</div>
-        <h1>Healthy choices,<br><em>made your way.</em></h1>
-        <p class="muted">Who says healthy has to be boring? Build a sandwich, pick your balance, and make lunch feel easy again.</p>
-        <div class="hero-actions">
-          <a class="btn" href="#builder">Build your sandwich</a>
-          <a class="btn outline" href="#menu">View menu</a>
-        </div>
-        <div class="hero-meta">
-          <div><strong>100%</strong><span>Whole wheat</span></div>
-          <div><strong>3 min</strong><span>Ready to go</span></div>
-          <div><strong>Daily</strong><span>Made fresh</span></div>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <img src="https://images.unsplash.com/photo-1528735602780-2552fd4c4c?auto=format&fit=crop&w=1200&q=80" alt="Sandwich SANDWHEAT" />
-        <div class="hero-card">
-          <b>Best seller</b>
-          <span>Sandwich Gandum Ayam · Rp13.000</span>
-        </div>
-      </div>
+      <div class="hero-copy"><div class="eyebrow">A fresh take on everyday eating</div><h1>Healthy choices,<br><em>made your way.</em></h1><p class="muted">Who says healthy has to be boring? Build a sandwich, pick your balance, and make lunch feel easy again.</p><div class="hero-actions"><a class="btn" href="#builder">Build your sandwich</a><a class="btn outline" href="#menu">View menu</a></div><div class="hero-meta"><div><strong>100%</strong><span>Whole wheat</span></div><div><strong>3 min</strong><span>Ready to go</span></div><div><strong>Daily</strong><span>Made fresh</span></div></div></div>
+      <div class="hero-visual"><img src="https://images.unsplash.com/photo-1528735602780-2552fd4c4c?auto=format&fit=crop&w=1200&q=80" alt="Sandwich SANDWHEAT" /><div class="hero-card"><b>Best seller</b><span>Sandwich Gandum Ayam · Rp13.000</span></div></div>
     </section>
 
-    <section class="benefits">
-      <div class="wrap benefit-grid">
-        <div class="benefit">
-          <div class="benefit-icon">🌾</div>
-          <div><b>Whole Wheat Goodness</b><span>A hearty, wholesome base</span></div>
-        </div>
-        <div class="benefit">
-          <div class="benefit-icon">🥗</div>
-          <div><b>Fresh ingredients</b><span>Picked for balance and flavor</span></div>
-        </div>
-        <div class="benefit">
-          <div class="benefit-icon">⚡</div>
-          <div><b>Quick and easy</b><span>Made for busy days</span></div>
-        </div>
-        <div class="benefit">
-          <div class="benefit-icon">💚</div>
-          <div><b>Feel-good fuel</b><span>Simple choices, better energy</span></div>
-        </div>
-      </div>
-    </section>
+    <section class="benefits"><div class="wrap benefit-grid"><div class="benefit"><div class="benefit-icon">🌾</div><div><b>Whole Wheat Goodness</b><span>A hearty, wholesome base</span></div></div><div class="benefit"><div class="benefit-icon">🥗</div><div><b>Fresh ingredients</b><span>Picked for balance and flavor</span></div></div><div class="benefit"><div class="benefit-icon">⚡</div><div><b>Quick and easy</b><span>Made for busy days</span></div></div><div class="benefit"><div class="benefit-icon">💚</div><div><b>Feel-good fuel</b><span>Simple choices, better energy</span></div></div></div></section>
 
-    <section class="section wrap" id="menu">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">Good food, no guesswork</div>
-          <h2>Meet your new<br>everyday favorite.</h2>
-        </div>
-        <p class="muted">Start with your base, layer your extras, and make it your own.</p>
-      </div>
-      <div class="product-grid" id="productCards"></div>
-    </section>
+    <section class="section wrap" id="menu"><div class="section-head"><div><div class="eyebrow">Good food, no guesswork</div><h2>Meet your new<br>everyday favorite.</h2></div><p class="muted">Start with your base, layer your extras, and make it your own.</p></div><div class="product-grid" id="productCards"></div></section>
 
-    <section class="custom-section section" id="builder">
-      <div class="wrap custom-layout">
-        <div class="builder-card">
-          <div class="eyebrow">Your sandwich, your rules</div>
-          <h2 style="font-size:clamp(2.2rem,3vw,3rem);margin-top:12px;">Let’s make it yours.</h2>
+    <section class="custom-section section" id="builder"><div class="wrap custom-layout"><div class="builder-card"><div class="eyebrow">Your sandwich, your rules</div><h2 style="font-size:clamp(2.2rem,3vw,3rem);margin-top:12px;">Let’s make it yours.</h2><div class="field-group"><div class="field-title"><b>01 — Choose your base</b><span>Pick one</span></div><div class="choice-grid three-text" id="baseChoices"></div></div><div class="field-group"><div class="field-title"><b>02 — Protein preference</b><span>Make it count</span></div><div class="choice-grid three-text" id="proteinChoices"></div></div><div class="field-group"><div class="field-title"><b>03 — Calorie preference</b><span>Find your balance</span></div><div class="choice-grid three-text" id="calorieChoices"></div></div><div class="field-group"><div class="field-title"><b>04 — Add your greens</b><span>Included</span></div><div class="checkrow"><label class="checkpill"><input type="checkbox" id="lettuce" checked /> Lettuce</label><label class="checkpill"><input type="checkbox" id="tomato" checked /> Tomato</label></div></div><div class="field-group"><div class="field-title"><b>05 — Pick your sauce</b><span>Choose one</span></div><div class="builder-grid"><div><label class="inline-label" for="sauce">Sauce</label><select id="sauce"><option value="mayo">Mayonnaise</option><option value="tomato">Tomato sauce</option><option value="chili">Chili sauce</option><option value="none">No sauce</option></select></div><div><label class="inline-label" for="sauceAmount">Serving</label><select id="sauceAmount"><option value="regular">Regular</option><option value="extra">Extra</option></select></div></div></div><div class="field-group"><div class="field-title"><b>06 — Make it extra special</b><span>Optional add-ons</span></div><div class="checkrow" id="extras"></div></div><div class="field-group"><div class="builder-grid"><div><label class="inline-label">Quantity</label><div class="qty"><button id="qtyMinus" type="button" aria-label="Decrease quantity">−</button><strong id="qtyVal">1</strong><button id="qtyPlus" type="button" aria-label="Increase quantity">+</button></div></div><div><label class="inline-label">Notes</label><input id="notes" type="text" placeholder="No onion, extra chili..." /></div></div></div><div class="builder-bottom"><div class="live-total"><small>Price per sandwich</small><strong id="livePrice">Rp12.000</strong></div><button class="btn" id="addOrder" type="button">Add to order +</button></div></div><aside class="summary-box"><div class="summary-head"><h3>Your order</h3><span class="summary-count" id="summaryCount">0 items</span></div><div id="orderItems"><div class="empty-state">Your next favorite sandwich is waiting.</div></div></aside></div></section>
 
-          <div class="field-group">
-            <div class="field-title"><b>01 — Choose your base</b><span>Pick one</span></div>
-            <div class="choice-grid three-text" id="baseChoices"></div>
-          </div>
+    <section class="checkout" id="checkout"><div class="wrap"><div class="checkout-card"><div class="section-head" style="margin-bottom:18px"><div><div class="eyebrow">Almost there</div><h2>Make it official.</h2></div><button class="btn outline" id="backToBuilder" type="button">Back to builder</button></div><form id="customerForm"><div class="checkout-grid"><div><label>Nama lengkap<input id="customerName" name="customerName" type="text" required /></label></div><div><label>Nomor telepon<input id="customerPhone" name="customerPhone" type="tel" required /></label></div><div><label>Jenis pelanggan<select id="customerType"><option value="Dine in">Dine in</option><option value="Take away">Take away</option><option value="Delivery">Delivery</option></select></label></div><div><label>Waktu pengambilan<input id="deliveryTime" type="time" required /></label></div><div class="full"><label>Alamat / catatan pengiriman<textarea id="customerAddress" placeholder="Tuliskan alamat atau detail pengiriman"></textarea></label></div><div class="full"><label>Catatan tambahan<textarea id="customerNotes" placeholder="Catatan untuk pesanan Anda"></textarea></label></div><div class="full"><div class="payment-row"><label><input type="radio" name="paymentMethod" value="QRIS" checked /> QRIS</label><label><input type="radio" name="paymentMethod" value="Tunai" /> Tunai</label></div></div></div><div class="notice" id="checkoutNotice"></div><button class="btn" type="submit">Confirm order</button></form><div class="final-confirmation" id="finalConfirmation"></div></div></div></section>
 
-          <div class="field-group">
-            <div class="field-title"><b>02 — Protein preference</b><span>Make it count</span></div>
-            <div class="choice-grid three-text" id="proteinChoices"></div>
-          </div>
+    <section class="section wrap" id="about"><div class="about"><div class="about-image"><img src="https://images.unsplash.com/photo-1553909489-cd47e0ef937f?auto=format&fit=crop&w=1000&q=85" alt="SANDWHEAT story"></div><div class="about-copy"><div class="eyebrow">About us</div><h2>Fresh, practical, and made for everyday life.</h2><p>SANDWHEAT brings whole wheat sandwiches that are easy to love, easy to grab, and built to fuel your routine. We combine quality ingredients, familiar flavors, and a simple ordering experience so healthy choices feel natural.</p></div></div></section>
 
-          <div class="field-group">
-            <div class="field-title"><b>03 — Calorie preference</b><span>Find your balance</span></div>
-            <div class="choice-grid three-text" id="calorieChoices"></div>
-          </div>
-
-          <div class="field-group">
-            <div class="field-title"><b>04 — Add your greens</b><span>Included</span></div>
-            <div class="checkrow">
-              <label class="checkpill"><input type="checkbox" id="lettuce" checked /> Lettuce</label>
-              <label class="checkpill"><input type="checkbox" id="tomato" checked /> Tomato</label>
-            </div>
-          </div>
-
-          <div class="field-group">
-            <div class="field-title"><b>05 — Pick your sauce</b><span>Choose one</span></div>
-            <div class="builder-grid">
-              <div>
-                <label class="inline-label" for="sauce">Sauce</label>
-                <select id="sauce">
-                  <option value="mayo">Mayonnaise</option>
-                  <option value="tomato">Tomato sauce</option>
-                  <option value="chili">Chili sauce</option>
-                  <option value="none">No sauce</option>
-                </select>
-              </div>
-              <div>
-                <label class="inline-label" for="sauceAmount">Serving</label>
-                <select id="sauceAmount">
-                  <option value="regular">Regular</option>
-                  <option value="extra">Extra</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="field-group">
-            <div class="field-title"><b>06 — Make it extra special</b><span>Optional add-ons</span></div>
-            <div class="checkrow" id="extras"></div>
-          </div>
-
-          <div class="field-group">
-            <div class="builder-grid">
-              <div>
-                <label class="inline-label">Quantity</label>
-                <div class="qty">
-                  <button id="qtyMinus" type="button" aria-label="Decrease quantity">−</button>
-                  <strong id="qtyVal">1</strong>
-                  <button id="qtyPlus" type="button" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-              <div>
-                <label class="inline-label">Notes</label>
-                <input id="notes" type="text" placeholder="No onion, extra chili..." />
-              </div>
-            </div>
-          </div>
-
-          <div class="builder-bottom">
-            <div class="live-total">
-              <small>Price per sandwich</small>
-              <strong id="livePrice">Rp12.000</strong>
-            </div>
-            <button class="btn" id="addOrder" type="button">Add to order +</button>
-          </div>
-        </div>
-
-        <aside class="summary-box">
-          <div class="summary-head">
-            <h3>Your order</h3>
-            <span class="summary-count" id="summaryCount">0 items</span>
-          </div>
-          <div id="orderItems">
-            <div class="empty-state">Your next favorite sandwich is waiting.</div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="checkout" id="checkout">
-      <div class="wrap">
-        <div class="checkout-card">
-          <div class="section-head" style="margin-bottom:18px">
-            <div>
-              <div class="eyebrow">Almost there</div>
-              <h2>Make it official.</h2>
-            </div>
-            <button class="btn outline" id="backToBuilder" type="button">Back to builder</button>
-          </div>
-
-          <form id="customerForm">
-            <div class="checkout-grid">
-              <div>
-                <label>Nama lengkap<input id="customerName" name="customerName" type="text" required /></label>
-              </div>
-              <div>
-                <label>Nomor telepon<input id="customerPhone" name="customerPhone" type="tel" required /></label>
-              </div>
-              <div>
-                <label>Jenis pelanggan<select id="customerType"><option value="Dine in">Dine in</option><option value="Take away">Take away</option><option value="Delivery">Delivery</option></select></label>
-              </div>
-              <div>
-                <label>Waktu pengambilan<input id="deliveryTime" type="time" required /></label>
-              </div>
-              <div class="full">
-                <label>Alamat / catatan pengiriman<textarea id="customerAddress" placeholder="Tuliskan alamat atau detail pengiriman"></textarea></label>
-              </div>
-              <div class="full">
-                <label>Catatan tambahan<textarea id="customerNotes" placeholder="Catatan untuk pesanan Anda"></textarea></label>
-              </div>
-              <div class="full">
-                <div class="payment-row">
-                  <label><input type="radio" name="paymentMethod" value="QRIS" checked /> QRIS</label>
-                  <label><input type="radio" name="paymentMethod" value="Tunai" /> Tunai</label>
-                </div>
-              </div>
-            </div>
-            <div class="notice" id="checkoutNotice"></div>
-            <button class="btn" type="submit">Confirm order</button>
-          </form>
-          <div class="final-confirmation" id="finalConfirmation"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section wrap" id="about">
-      <div class="about">
-        <div class="about-image">
-          <img src="https://images.unsplash.com/photo-1553909489-cd47e0ef937f?auto=format&fit=crop&w=1000&q=85" alt="SANDWHEAT story" />
-        </div>
-        <div class="about-copy">
-          <div class="eyebrow">About us</div>
-          <h2>Fresh, practical, and made for everyday life.</h2>
-          <p>SANDWHEAT brings whole wheat sandwiches that are easy to love, easy to grab, and built to fuel your routine. We combine quality ingredients, familiar flavors, and a simple ordering experience so healthy choices feel natural.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact-band" id="contact">
-      <div class="wrap contact-inner">
-        <div>
-          <div class="eyebrow">Let’s make lunch better</div>
-          <h2>Good bites are just a few clicks away.</h2>
-          <p>Build your sandwich, place your order, and get something satisfying without the hassle.</p>
-        </div>
-        <div class="contact-card">
-          <div class="contact-meta">
-            <div class="meta"><span>Phone</span><strong>08118481107</strong></div>
-            <div class="meta"><span>WhatsApp</span><strong>+62 811-8481-107</strong></div>
-            <div class="meta"><span>Business</span><strong>Good bites, on the go.</strong></div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="contact-band" id="contact"><div class="wrap contact-inner"><div><div class="eyebrow">Let’s make lunch better</div><h2>Good bites are just a few clicks away.</h2><p>Build your sandwich, place your order, and get something satisfying without the hassle.</p></div><div class="contact-card"><div class="contact-meta"><div class="meta"><span>Phone</span><strong>08118481107</strong></div><div class="meta"><span>WhatsApp</span><strong>+62 811-8481-107</strong></div><div class="meta"><span>Business</span><strong>Good bites, on the go.</strong></div></div></div></div></section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">
-      <div class="footer-top">
-        <a class="brand" href="#home">
-          <span class="brand-mark">S</span>
-          <span class="brand-text" style="color:#fff">SANDWHEAT<small>GOOD BITES, ON THE GO.</small></span>
-        </a>
-        <div class="footer-nav">
-          <a href="#home">Home</a>
-          <a href="#menu">Menu</a>
-          <a href="#builder">Customize</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>SANDWHEAT — Good Bites, On the Go.</span>
-        <span>Follow the fresh route.</span>
-      </div>
-    </div>
-  </footer>
-
+  <footer class="footer"><div class="wrap"><div class="footer-top"><a class="brand" href="#home"><span class="brand-mark">S</span><span class="brand-text" style="color:#fff">SANDWHEAT<small>GOOD BITES, ON THE GO.</small></span></a><div class="footer-nav"><a href="#home">Home</a><a href="#menu">Menu</a><a href="#builder">Customize</a><a href="#about">About</a><a href="#contact">Contact</a></div></div><div class="footer-bottom"><span>SANDWHEAT — Good Bites, On the Go.</span><span>Follow the fresh route.</span></div></div></footer>
   <div id="toast" class="toast" aria-live="polite"></div>
 
   <script>
     const SANDWHEAT_ORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzY87VYeRRiXkdYTmZu7yUNVNCacAwfLI-N6iBkIUVIZa9IhmnuGjqscD2XhiZO5P1R/exec';
-    const DEFAULT_CMS = {
-      heroTitle: 'Healthy choices, made your way.',
-      heroSubtitle: 'Who says healthy has to be boring? Build a sandwich that fits your day.',
-      aboutTitle: 'About SANDWHEAT',
-      aboutStory: 'SANDWHEAT brings whole wheat sandwiches that are easy to love, easy to grab, and built to fuel your routine. We combine quality ingredients, familiar flavors, and a simple ordering experience so healthy choices feel natural.',
-      contactPhone: '08118481107',
-      contactWhatsapp: '628118481107',
-      businessInfo: 'Good bites, on the go.',
-      footerText: 'SANDWHEAT — Good Bites, On the Go.',
-      primaryColor: '#526344',
-      secondaryColor: '#35452f',
-      accentColor: '#b68b5c',
-      showAbout: true,
-      showMenu: true,
-      showContact: true,
-      sectionOrder: 'menu,about,contact'
-    };
-
     const PRODUCTS = [
       {id:'egg',name:'Sandwich Gandum Telur',base:12000,desc:'A comforting classic with whole wheat bread and savory egg.',cal:310,protein:14,img:'https://images.unsplash.com/photo-1528735602780-2552fd4c4c?auto=format&fit=crop&w=900&q=80'},
       {id:'chicken',name:'Sandwich Gandum Ayam',base:13000,desc:'Tender chicken, fresh greens, and room to add more protein.',cal:340,protein:22,img:'https://images.unsplash.com/photo-1553909489-cd47e0ef937f?auto=format&fit=crop&w=900&q=80'},
       {id:'beef',name:'Sandwich Gandum Daging Slice',base:15000,desc:'Savory sliced beef for a satisfying bite on busy days.',cal:365,protein:20,img:'https://images.unsplash.com/photo-1550507992-eb63ffe6f612?auto=format&fit=crop&w=900&q=80'}
     ];
-
-    const EXTRAS = {
-      egg:{name:'Extra egg',price:3000,cal:75,protein:6},
-      chicken:{name:'Extra chicken',price:5000,cal:90,protein:12},
-      beef:{name:'Extra sliced beef',price:6000,cal:100,protein:10},
-      veg:{name:'Extra greens',price:2000,cal:25,protein:3},
-      cheese:{name:'Cheese',price:2500,cal:60,protein:4}
-    };
-
+    const EXTRAS = {egg:{name:'Extra egg',price:3000,cal:75,protein:6},chicken:{name:'Extra chicken',price:5000,cal:90,protein:12},beef:{name:'Extra sliced beef',price:6000,cal:100,protein:10},veg:{name:'Extra greens',price:2000,cal:25,protein:3},cheese:{name:'Cheese',price:2500,cal:60,protein:4}};
     const SAUCES = {mayo:{name:'Mayonnaise',cal:90},tomato:{name:'Tomato sauce',cal:20},chili:{name:'Chili sauce',cal:15},none:{name:'No sauce',cal:0}};
-
     let current = {base:'egg',protein:'regular',calorie:'balanced',lettuce:true,tomato:true,sauce:'mayo',sauceAmount:'regular',extras:[],qty:1,notes:''};
     let orders = [];
     let editingId = null;
-    let cms = {...DEFAULT_CMS};
 
     const rupiah = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
     const el = id => document.getElementById(id);
-    const productById = id => PRODUCTS.find(p => p.id === id);
+    const productById = id => PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
 
     function showToast(msg){const t=el('toast');t.textContent=msg;t.classList.add('show');clearTimeout(showToast.timeout);showToast.timeout=setTimeout(()=>t.classList.remove('show'),2300)}
-
     function escapeHtml(str){return String(str || '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
     function calculate(c){
-      const base = productById(c.base) || PRODUCTS[0];
+      const base = productById(c.base);
       let price = base.base;
       let cal = base.cal;
       let protein = base.protein;
-
-      if (c.protein === 'high') {
-        price += 4000; cal += 50; protein += 6;
-      } else if (c.protein === 'extra') {
-        price += 7000; cal += 95; protein += 12;
-      }
-
-      if (c.calorie === 'light') {
-        price -= 1000; cal -= 30;
-      } else if (c.calorie === 'high') {
-        price += 2000; cal += 50;
-      }
-
-      if (c.lettuce) { price += 500; }
-      if (c.tomato) { price += 500; }
-
+      if (c.protein === 'high') { price += 4000; cal += 50; protein += 6; }
+      else if (c.protein === 'extra') { price += 7000; cal += 95; protein += 12; }
+      if (c.calorie === 'light') { price -= 1000; cal -= 30; }
+      else if (c.calorie === 'high') { price += 2000; cal += 50; }
+      if (c.lettuce) price += 500;
+      if (c.tomato) price += 500;
       const sauce = SAUCES[c.sauce] || SAUCES.mayo;
-      const sauceMult = c.sauceAmount === 'extra' ? 2 : 1;
-      price += sauce.cal * sauceMult * 0.35;
-      cal += sauce.cal * sauceMult;
-
+      const factor = c.sauceAmount === 'extra' ? 2 : 1;
+      price += sauce.cal * factor * 0.35;
+      cal += sauce.cal * factor;
       for (const extraKey of c.extras) {
         const extra = EXTRAS[extraKey];
-        if (extra) {
-          price += extra.price;
-          cal += extra.cal;
-          protein += extra.protein;
-        }
+        if (extra) { price += extra.price; cal += extra.cal; protein += extra.protein; }
       }
-
       return {price: Math.round(price), cal, protein};
     }
 
-    function normalizeCms(data){
-      const raw = data && typeof data === 'object' ? data : {};
-      return {...DEFAULT_CMS, ...raw, showAbout: raw.showAbout !== false, showMenu: raw.showMenu !== false, showContact: raw.showContact !== false};
-    }
-
-    function applyCmsSettings(settings){
-      cms = normalizeCms(settings);
-      const heroTitle = document.querySelector('#home h1');
-      if (heroTitle) heroTitle.innerHTML = cms.heroTitle ? cms.heroTitle.replace(/\n/g,'<br>') : DEFAULT_CMS.heroTitle;
-      const heroCopy = document.querySelector('#home .hero-copy .muted');
-      if (heroCopy) heroCopy.textContent = cms.heroSubtitle || DEFAULT_CMS.heroSubtitle;
-      const aboutTitle = document.querySelector('#about h2');
-      if (aboutTitle) aboutTitle.textContent = cms.aboutTitle || DEFAULT_CMS.aboutTitle;
-      const aboutText = document.querySelector('#about .about-copy p');
-      if (aboutText) aboutText.textContent = cms.aboutStory || DEFAULT_CMS.aboutStory;
-      const footerText = document.querySelector('.footer-bottom span:first-child');
-      if (footerText) footerText.textContent = cms.footerText || DEFAULT_CMS.footerText;
-      const phone = document.querySelector('.contact-card .meta strong');
-      if (phone) phone.textContent = cms.contactPhone || DEFAULT_CMS.contactPhone;
-      const whatsapp = document.querySelectorAll('.contact-card .meta strong')[1];
-      if (whatsapp) whatsapp.textContent = cms.contactWhatsapp ? `+62 ${String(cms.contactWhatsapp).replace(/^62/, '')}` : '+62 811-8481-107';
-      document.documentElement.style.setProperty('--olive', cms.primaryColor || '#526344');
-      document.documentElement.style.setProperty('--olive2', cms.secondaryColor || '#35452f');
-      document.documentElement.style.setProperty('--brown', cms.accentColor || '#b68b5c');
-    }
-
-    function renderProducts(){
-      const cards = PRODUCTS.map(p => `
-        <article class="product">
-          <div class="product-image"><img src="${p.img}" alt="${escapeHtml(p.name)}" loading="lazy" /></div>
-          <div class="product-body">
-            <b>${escapeHtml(p.name)}</b>
-            <p>${escapeHtml(p.desc || 'Freshly made to match your day.')}</p>
-            <div class="product-meta">
-              <div class="price">${rupiah(p.base)}</div>
-              <span class="tag">Popular</span>
-            </div>
-          </div>
-        </article>
-      `).join('');
-      el('productCards').innerHTML = cards;
-    }
-
+    function renderProducts(){const cards=PRODUCTS.map(p=>`<article class="product"><div class="product-image"><img src="${p.img}" alt="${escapeHtml(p.name)}" loading="lazy"></div><div class="product-body"><b>${escapeHtml(p.name)}</b><p>${escapeHtml(p.desc || 'Freshly made to match your day.')}</p><div class="product-meta"><div class="price">${rupiah(p.base)}</div><span class="tag">Popular</span></div></div></article>`).join('');el('productCards').innerHTML=cards;}
     function renderBuilderChoices(){
-      const baseChoices = PRODUCTS.map(p => `<button class="choice ${current.base === p.id ? 'selected' : ''}" type="button" data-base="${p.id}">${p.name}</button>`).join('');
-      el('baseChoices').innerHTML = baseChoices;
+      el('baseChoices').innerHTML = PRODUCTS.map(p => `<button class="choice ${current.base === p.id ? 'selected' : ''}" type="button" data-base="${p.id}">${p.name}</button>`).join('');
       el('proteinChoices').innerHTML = ['regular','high','extra'].map(v => `<button class="choice ${current.protein === v ? 'selected' : ''}" type="button" data-protein="${v}">${v === 'regular' ? 'Regular' : v === 'high' ? 'High protein' : 'Extra protein'}</button>`).join('');
       el('calorieChoices').innerHTML = ['balanced','light','high'].map(v => `<button class="choice ${current.calorie === v ? 'selected' : ''}" type="button" data-calorie="${v}">${v === 'balanced' ? 'Balanced' : v === 'light' ? 'Light' : 'High energy'}</button>`).join('');
       el('extras').innerHTML = Object.entries(EXTRAS).map(([key,val]) => `<label class="checkpill"><input type="checkbox" value="${key}" ${current.extras.includes(key) ? 'checked' : ''} /> ${val.name}</label>`).join('');
@@ -537,204 +109,93 @@
       el('qtyVal').textContent = String(current.qty);
       renderLive();
     }
-
-    function renderLive(){
-      const calc = calculate(current);
-      el('livePrice').textContent = rupiah(calc.price * current.qty);
-      document.getElementById('qtyVal').textContent = current.qty;
-    }
-
-    function renderOrders(){
-      const count = orders.reduce((total,o) => total + o.config.qty, 0);
-      el('summaryCount').textContent = count + ' item' + (count === 1 ? '' : 's');
-      if (!orders.length) {
-        el('orderItems').innerHTML = '<div class="empty-state">Your next favorite sandwich is waiting.</div>';
-        return;
-      }
-      el('orderItems').innerHTML = orders.map(o => {
-        const p = productById(o.config.base) || PRODUCTS[0];
-        const total = calculate(o.config);
-        return `
-          <div class="order-item">
-            <div>
-              <strong>${escapeHtml(p.name)} × ${o.config.qty}</strong>
-              <small>${escapeHtml(o.config.notes || 'No extra note')}</small>
-            </div>
-            <div class="order-actions">
-              <button type="button" data-edit-order="${o.id}">Edit</button>
-              <button type="button" data-remove-order="${o.id}">Remove</button>
-            </div>
-            <strong>${rupiah(total.price * o.config.qty)}</strong>
-          </div>
-        `;
-      }).join('');
-      document.querySelectorAll('[data-remove-order]').forEach(btn => btn.addEventListener('click', () => removeOrder(Number(btn.dataset.removeOrder))));
-      document.querySelectorAll('[data-edit-order]').forEach(btn => btn.addEventListener('click', () => editOrder(Number(btn.dataset.editOrder))));
-    }
-
-    function resetBuilder(){
-      current = {base:'egg',protein:'regular',calorie:'balanced',lettuce:true,tomato:true,sauce:'mayo',sauceAmount:'regular',extras:[],qty:1,notes:''};
-      editingId = null;
-      renderBuilderChoices();
-    }
-
-    function addOrder(){
-      const clone = JSON.parse(JSON.stringify(current));
-      if (editingId !== null) {
-        const idx = orders.findIndex(o => o.id === editingId);
-        if (idx >= 0) orders[idx].config = clone;
-      } else {
-        orders.push({id: Date.now(), config: clone});
-      }
-      editingId = null;
-      renderOrders();
-      showToast('Sandwich added to your order.');
-      resetBuilder();
-    }
-
-    function changeOrderQty(delta){
-      current.qty = Math.max(1, Math.min(99, current.qty + delta));
-      renderBuilderChoices();
-    }
-
-    function removeOrder(id){
-      orders = orders.filter(o => o.id !== id);
-      renderOrders();
-      showToast('Sandwich removed.');
-    }
-
-    function editOrder(id){
-      const item = orders.find(o => o.id === id);
-      if (!item) return;
-      current = JSON.parse(JSON.stringify(item.config));
-      editingId = id;
-      renderBuilderChoices();
-      document.getElementById('builder').scrollIntoView({behavior:'smooth'});
-    }
-
-    function renderCheckoutSummary(){
-      const total = orders.reduce((sum, item) => sum + calculate(item.config).price * item.config.qty, 0);
-      return `
-        <div class="eyebrow">Review your order</div>
-        <h3 style="font-size:1.7rem;margin:12px 0;">${rupiah(total)}</h3>
-        <div>${orders.map(o => `${escapeHtml(productById(o.config.base)?.name || 'Sandwich')} × ${o.config.qty}`).join('<br>')}</div>
-      `;
-    }
-
+    function renderLive(){const calc=calculate(current);el('livePrice').textContent = rupiah(calc.price * current.qty);el('qtyVal').textContent = current.qty;}
+    function renderOrders(){const count=orders.reduce((s,o)=>s+o.config.qty,0);el('summaryCount').textContent = count + ' item' + (count === 1 ? '' : 's'); if(!orders.length){el('orderItems').innerHTML='<div class="empty-state">Your next favorite sandwich is waiting.</div>'; return;} el('orderItems').innerHTML = orders.map(o => {const p = productById(o.config.base);const total = calculate(o.config); return `<div class="order-item"><div><strong>${escapeHtml(p.name)} × ${o.config.qty}</strong><small>${escapeHtml(o.config.notes || 'No extra note')}</small></div><div class="order-actions"><button type="button" data-edit-order="${o.id}">Edit</button><button type="button" data-remove-order="${o.id}">Remove</button></div><strong>${rupiah(total.price * o.config.qty)}</strong></div>`;}).join(''); document.querySelectorAll('[data-remove-order]').forEach(btn => btn.addEventListener('click', () => removeOrder(Number(btn.dataset.removeOrder)))); document.querySelectorAll('[data-edit-order]').forEach(btn => btn.addEventListener('click', () => editOrder(Number(btn.dataset.editOrder)))); }
+    function resetBuilder(){current={base:'egg',protein:'regular',calorie:'balanced',lettuce:true,tomato:true,sauce:'mayo',sauceAmount:'regular',extras:[],qty:1,notes:''};editingId=null;renderBuilderChoices();}
+    function addOrder(){const clone = JSON.parse(JSON.stringify(current)); if (editingId !== null) { const idx = orders.findIndex(o => o.id === editingId); if (idx >= 0) orders[idx].config = clone; } else { orders.push({id: Date.now(), config: clone}); } editingId = null; renderOrders(); showToast('Sandwich added to your order.'); resetBuilder(); }
+    function changeOrderQty(delta){current.qty = Math.max(1, Math.min(99, current.qty + delta)); renderBuilderChoices();}
+    function removeOrder(id){orders = orders.filter(o => o.id !== id); renderOrders(); showToast('Sandwich removed.');}
+    function editOrder(id){const item = orders.find(o => o.id === id); if(!item) return; current = JSON.parse(JSON.stringify(item.config)); editingId = id; renderBuilderChoices(); document.getElementById('builder').scrollIntoView({behavior:'smooth'}); }
+    function renderCheckoutSummary(){const total = orders.reduce((sum, item) => sum + calculate(item.config).price * item.config.qty, 0); return `<div class="eyebrow">Review your order</div><h3 style="font-size:1.7rem;margin:12px 0;">${rupiah(total)}</h3><div>${orders.map(o => `${escapeHtml(productById(o.config.base).name)} × ${o.config.qty}`).join('<br>')}</div>`; }
     function showNotice(msg){const n=el('checkoutNotice');n.textContent=msg;n.classList.add('show');}
 
-    async function fetchCmsAndProducts(){
-      if (!SANDWHEAT_ORDER_ENDPOINT) return;
-      try {
-        const [settingsResponse, productsResponse] = await Promise.all([
-          fetch(`${SANDWHEAT_ORDER_ENDPOINT}?action=${encodeURIComponent('cmsSettings')}`, {method:'GET', headers:{Accept:'application/json'}}),
-          fetch(`${SANDWHEAT_ORDER_ENDPOINT}?action=${encodeURIComponent('products')}`, {method:'GET', headers:{Accept:'application/json'}})
-        ]);
-
-        const settingsPayload = await settingsResponse.json().catch(() => ({}));
-        const productsPayload = await productsResponse.json().catch(() => ({products:[]}));
-
-        if (settingsPayload && settingsPayload.settings) applyCmsSettings(settingsPayload.settings);
-        if (Array.isArray(productsPayload.products) && productsPayload.products.length) {
-          productsPayload.products.forEach((p) => {
-            const idx = PRODUCTS.findIndex(item => item.id === (p.id || p.productId));
-            if (idx >= 0) Object.assign(PRODUCTS[idx], p);
-          });
-          renderProducts();
-        }
-      } catch (err) {
-        console.warn('CMS data unavailable', err);
+    async function cmsFetch(action){try{const response=await fetch(`${SANDWHEAT_ORDER_ENDPOINT}?action=${encodeURIComponent(action)}`, {cache:'no-store', headers:{Accept:'application/json'}}); const text = await response.text(); if(!text) return {}; try { return JSON.parse(text);} catch { return {raw:text}; } } catch { return {}; }}
+    async function applyPublicCms(){
+      const data = await cmsFetch('cmsSettings');
+      const settings = data && (data.settings || data.data || data);
+      if (!settings || typeof settings !== 'object') return;
+      const heroTitle = document.querySelector('.hero-copy h1');
+      if (heroTitle && settings.heroTitle) {
+        heroTitle.innerHTML = settings.heroTitle.replace(/\n/g, '<br>');
+      }
+      const heroText = document.querySelector('.hero-copy .muted');
+      if (heroText && settings.heroSubtitle) heroText.textContent = settings.heroSubtitle;
+      const aboutTitle = document.querySelector('#about h2');
+      if (aboutTitle && settings.aboutTitle) aboutTitle.textContent = settings.aboutTitle;
+      const aboutText = document.querySelector('#about .about-copy p');
+      if (aboutText && settings.aboutStory) aboutText.textContent = settings.aboutStory;
+      const phone = document.querySelector('.contact-card .meta strong');
+      if (phone && settings.contactPhone) phone.textContent = settings.contactPhone;
+      const whatsapp = document.querySelectorAll('.contact-card .meta strong')[1];
+      if (whatsapp && settings.contactWhatsapp) whatsapp.textContent = settings.contactWhatsapp.replace(/^628/,'+62 ').replace(/(\d{3})(\d{4})(\d{3,})/, '$1-$2-$3');
+      const footer = document.querySelector('.footer-bottom span:first-child');
+      if (footer && settings.footerText) footer.textContent = settings.footerText;
+      if (settings.primaryColor) document.documentElement.style.setProperty('--olive', settings.primaryColor);
+      if (settings.secondaryColor) document.documentElement.style.setProperty('--olive2', settings.secondaryColor);
+      if (settings.accentColor) document.documentElement.style.setProperty('--brown', settings.accentColor);
+      const productData = await cmsFetch('products');
+      const list = (productData && (productData.products || productData.data || [])) || [];
+      if (Array.isArray(list) && list.length) {
+        list.forEach(item => {
+          const key = String(item.id || item.productId || item.slug || '').trim();
+          const idx = PRODUCTS.findIndex(p => p.id === key);
+          if (idx >= 0) {
+            const p = PRODUCTS[idx];
+            if (item.name) p.name = item.name;
+            if (item.price || item.price === 0) p.base = Number(item.price);
+            if (item.description) p.desc = item.description;
+            if (item.image) p.img = item.image;
+            if (item.active === false) p.hidden = true;
+          }
+        });
+        renderProducts();
       }
     }
 
-    document.getElementById('baseChoices').addEventListener('click', e => {
-      const button = e.target.closest('[data-base]');
-      if (!button) return;
-      current.base = button.dataset.base;
-      renderBuilderChoices();
-    });
-
-    document.getElementById('proteinChoices').addEventListener('click', e => {
-      const button = e.target.closest('[data-protein]');
-      if (!button) return;
-      current.protein = button.dataset.protein;
-      renderBuilderChoices();
-    });
-
-    document.getElementById('calorieChoices').addEventListener('click', e => {
-      const button = e.target.closest('[data-calorie]');
-      if (!button) return;
-      current.calorie = button.dataset.calorie;
-      renderBuilderChoices();
-    });
-
-    document.getElementById('extras').addEventListener('change', e => {
-      const input = e.target;
-      if (!input.matches('input[type="checkbox"]')) return;
-      const val = input.value;
-      if (input.checked) current.extras = [...new Set([...current.extras, val])];
-      else current.extras = current.extras.filter(item => item !== val);
-      renderLive();
-    });
-
-    document.getElementById('lettuce').addEventListener('change', e => { current.lettuce = e.target.checked; renderLive(); });
-    document.getElementById('tomato').addEventListener('change', e => { current.tomato = e.target.checked; renderLive(); });
-    document.getElementById('sauce').addEventListener('change', e => { current.sauce = e.target.value; renderLive(); });
-    document.getElementById('sauceAmount').addEventListener('change', e => { current.sauceAmount = e.target.value; renderLive(); });
+    document.getElementById('baseChoices').addEventListener('click', e => {const b=e.target.closest('[data-base]'); if(b){current.base=b.dataset.base; renderBuilderChoices();}});
+    document.getElementById('proteinChoices').addEventListener('click', e => {const b=e.target.closest('[data-protein]'); if(b){current.protein=b.dataset.protein; renderBuilderChoices();}});
+    document.getElementById('calorieChoices').addEventListener('click', e => {const b=e.target.closest('[data-calorie]'); if(b){current.calorie=b.dataset.calorie; renderBuilderChoices();}});
+    document.getElementById('extras').addEventListener('change', e => {const input=e.target;if(!input.matches('input[type="checkbox"]')) return; const val=input.value; if(input.checked) current.extras=[...new Set([...current.extras, val])]; else current.extras=current.extras.filter(item=>item!==val); renderLive();});
+    document.getElementById('lettuce').addEventListener('change', e => {current.lettuce = e.target.checked; renderLive();});
+    document.getElementById('tomato').addEventListener('change', e => {current.tomato = e.target.checked; renderLive();});
+    document.getElementById('sauce').addEventListener('change', e => {current.sauce = e.target.value; renderLive();});
+    document.getElementById('sauceAmount').addEventListener('change', e => {current.sauceAmount = e.target.value; renderLive();});
     document.getElementById('qtyMinus').addEventListener('click', () => changeOrderQty(-1));
     document.getElementById('qtyPlus').addEventListener('click', () => changeOrderQty(1));
-    document.getElementById('notes').addEventListener('input', e => { current.notes = e.target.value; });
+    document.getElementById('notes').addEventListener('input', e => {current.notes = e.target.value;});
     document.getElementById('addOrder').addEventListener('click', addOrder);
     document.getElementById('backToBuilder').addEventListener('click', () => document.getElementById('builder').scrollIntoView({behavior:'smooth'}));
-
     document.getElementById('customerForm').addEventListener('submit', e => {
       e.preventDefault();
-      if (!orders.length) {
-        showNotice('Please add at least one sandwich before checkout.');
-        return;
-      }
+      if(!orders.length){showNotice('Please add at least one sandwich before checkout.'); return;}
       const name = document.getElementById('customerName').value.trim();
       const phone = document.getElementById('customerPhone').value.trim();
-      const address = document.getElementById('customerAddress').value.trim();
       const time = document.getElementById('deliveryTime').value;
-      const notes = document.getElementById('customerNotes').value.trim();
-      const type = document.getElementById('customerType').value;
       const pay = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'QRIS';
-
-      if (!name || !phone || !time) {
-        showNotice('Nama, nomor telepon, dan waktu pengambilan wajib diisi.');
-        return;
-      }
-
-      const payload = {
-        orderId: 'SW-' + new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14) + '-' + Math.random().toString(36).slice(2, 6).toUpperCase(),
-        createdAt: new Date().toISOString(),
-        customer: { name, phone, type, address, time, notes },
-        paymentMethod: pay,
-        paymentStatus: pay === 'QRIS' ? 'Menunggu verifikasi' : 'Tunai dipilih',
-        orderItems: orders.map(item => ({ ...item.config, productId: item.config.base, qty: item.config.qty }))
-      };
-
+      if(!name || !phone || !time){showNotice('Nama, nomor telepon, dan waktu pengambilan wajib diisi.'); return;}
+      const payload = {orderId:'SW-'+new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14)+'-'+Math.random().toString(36).slice(2,6).toUpperCase(), createdAt:new Date().toISOString(), customer:{name,phone,type:document.getElementById('customerType').value,address:document.getElementById('customerAddress').value.trim(),time,notes:document.getElementById('customerNotes').value.trim()}, paymentMethod:pay, paymentStatus:pay==='QRIS'?'Menunggu verifikasi':'Tunai dipilih', orderItems: orders.map(item => ({ ...item.config, productId: item.config.base, qty: item.config.qty }))};
       fetch(SANDWHEAT_ORDER_ENDPOINT,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
         .then(async res => {
           const body = await res.text();
-          if (!res.ok) throw new Error(body || 'Unable to save order.');
-          const confirmation = el('finalConfirmation');
-          confirmation.classList.add('show');
-          confirmation.innerHTML = renderCheckoutSummary();
+          if(!res.ok) throw new Error(body || 'Unable to save order.');
+          el('finalConfirmation').classList.add('show');
+          el('finalConfirmation').innerHTML = renderCheckoutSummary();
           showToast('Order sent to backend.');
         })
-        .catch(err => {
-          showNotice('Pesanan belum berhasil dikirim. Periksa Google Apps Script dan koneksi browser. ' + err.message);
-          console.error(err);
-        });
+        .catch(err => { showNotice('Pesanan belum berhasil dikirim. Periksa Google Apps Script dan koneksi browser. ' + err.message); console.error(err); });
     });
 
-    renderProducts();
-    renderBuilderChoices();
-    renderOrders();
-    fetchCmsAndProducts();
-    applyCmsSettings(DEFAULT_CMS);
+    renderProducts(); renderBuilderChoices(); renderOrders(); applyPublicCms();
   </script>
 </body>
 </html>

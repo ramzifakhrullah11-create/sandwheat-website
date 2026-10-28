@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const API_URL = "https://script.google.com/macros/s/AKfycbxEXGWrfi3Z26DZHgMRyjLht5mDYk-hGb_BngkJfOJpQ3di6kJLpafVCeejNw4RiPyW/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzY87VYeRRiXkdYTmZu7yUNVNCacAwfLI-N6iBkIUVIZa9IhmnuGjqscD2XhiZO5P1R/exec";
   const TOKEN_KEY = "sandwheat_admin_token";
   const DEFAULT_SETTINGS = {
     heroTitle: "Sandwich Gandum, Teman Aktivitasmu",
@@ -24,7 +24,15 @@
     revision: 0
   };
 
-  const state = { settings: { ...DEFAULT_SETTINGS }, products: [], revision: 0, activeView: "dashboard", editingProductId: null };
+  const state = {
+    settings: { ...DEFAULT_SETTINGS },
+    products: [],
+    revision: 0,
+    activeView: "dashboard",
+    editingProductId: null,
+    sessionValid: false,
+    loading: false
+  };
 
   const els = {
     appRoot: document.getElementById("appRoot"),
@@ -41,7 +49,7 @@
     statMenuCount: document.getElementById("statMenuCount"),
     statActiveCount: document.getElementById("statActiveCount"),
     statInactiveCount: document.getElementById("statInactiveCount"),
-    statRevision: document.getElementById("statRevision"),
+    statBackend: document.getElementById("statBackend"),
     dashboardSummary: document.getElementById("dashboardSummary"),
     productList: document.getElementById("productList"),
     productForm: document.getElementById("productForm"),
@@ -66,12 +74,35 @@
     "showMenu", "showAbout", "showContact"
   ];
 
-  function readStoredToken() { return sessionStorage.getItem(TOKEN_KEY) || ""; }
+  function readToken() {
+    return sessionStorage.getItem(TOKEN_KEY) || "";
+  }
+
+  function writeToken(token) {
+    if (token) sessionStorage.setItem(TOKEN_KEY, token);
+    else sessionStorage.removeItem(TOKEN_KEY);
+  }
 
   function setStatus(type, message) {
-    if (!els.statusBanner) return;
-    els.statusBanner.className = `flash ${type || ""}`.trim();
-    els.statusBanner.textContent = message || "";
+    const banner = els.statusBanner;
+    if (!banner) return;
+    banner.className = `flash ${type || ""}`.trim();
+    banner.textContent = message || "";
+  }
+
+  function setLoading(flag, message) {
+    state.loading = flag;
+    const actions = [els.saveBtn, els.cancelBtn, els.logoutBtn, els.saveProductBtn, els.newMenuBtn];
+    actions.forEach((button) => {
+      if (button) button.disabled = flag;
+    });
+    if (flag && message) setStatus("loading", message);
+  }
+
+  function toggleLoginScreen(showLogin) {
+    if (!els.appRoot || !els.loginScreen) return;
+    els.appRoot.hidden = !showLogin ? false : true;
+    els.loginScreen.hidden = !showLogin;
   }
 
   function updateView(nextView) {
@@ -82,8 +113,16 @@
     els.navItems.forEach((nav) => {
       nav.classList.toggle("active", nav.dataset.view === nextView);
     });
-    const pageMap = { dashboard: "Dashboard", menu: "Manajemen Menu", homepage: "Homepage", about: "About Us", contact: "Kontak", appearance: "Tampilan Website", preview: "Preview Perubahan" };
-    els.pageTitle.textContent = pageMap[nextView] || "Dashboard";
+    const pageMap = {
+      dashboard: "Dashboard",
+      menu: "Manajemen Menu",
+      homepage: "Homepage",
+      about: "About Us",
+      contact: "Kontak",
+      appearance: "Tampilan Website",
+      preview: "Preview Perubahan"
+    };
+    if (els.pageTitle) els.pageTitle.textContent = pageMap[nextView] || "Dashboard";
   }
 
   function normalizeSettings(raw) {
@@ -97,14 +136,14 @@
 
   function normalizeProduct(raw) {
     if (!raw || typeof raw !== "object") return null;
-    const id = String(raw.id || raw.productId || raw.slug || "").trim();
-    const name = String(raw.name || raw.title || raw.menuName || "").trim();
-    if (!id && !name) return null;
+    const candidateId = String(raw.id || raw.productId || raw.slug || "").trim();
+    const candidateName = String(raw.name || raw.title || raw.menuName || raw.productName || "").trim();
+    if (!candidateId && !candidateName) return null;
     const price = Number(raw.price ?? raw.harga ?? raw.base ?? 0);
     const active = raw.active !== false && raw.isActive !== false && raw.status !== "archived" && raw.status !== "inactive";
     return {
-      id: id || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
-      name,
+      id: candidateId || candidateName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+      name: candidateName,
       category: String(raw.category || raw.kategori || "Umum").trim(),
       description: String(raw.description || raw.desc || "").trim(),
       image: String(raw.image || raw.img || raw.photo || "").trim(),
@@ -115,23 +154,14 @@
     };
   }
 
-  function setLoading(flag, text) {
-    els.saveBtn.disabled = flag;
-    els.cancelBtn.disabled = flag;
-    els.logoutBtn.disabled = flag;
-    els.saveProductBtn.disabled = flag;
-    els.newMenuBtn.disabled = flag;
-    if (flag && text) setStatus("loading", text);
-  }
-
   function getSettingsFromForm() {
     const settings = { ...state.settings };
     formKeys.forEach((key) => {
       const field = document.getElementById(key);
       if (!field) return;
-      if (field.type === "checkbox") settings[key] = field.checked;
+      if (field.type === "checkbox") settings[key] = Boolean(field.checked);
       else if (field.type === "color") settings[key] = field.value || "#000000";
-      else settings[key] = field.value;
+      else settings[key] = field.value ?? "";
     });
     return normalizeSettings(settings);
   }
@@ -164,10 +194,11 @@
   function renderDashboard() {
     const activeCount = state.products.filter((item) => item.active).length;
     const inactiveCount = state.products.length - activeCount;
-    els.statMenuCount.textContent = String(state.products.length);
-    els.statActiveCount.textContent = String(activeCount);
-    els.statInactiveCount.textContent = String(inactiveCount);
-    els.statRevision.textContent = String(state.revision || 0);
+    const backendStatus = state.sessionValid ? "Aktif" : "Belum login";
+    if (els.statMenuCount) els.statMenuCount.textContent = String(state.products.length);
+    if (els.statActiveCount) els.statActiveCount.textContent = String(activeCount);
+    if (els.statInactiveCount) els.statInactiveCount.textContent = String(inactiveCount);
+    if (els.statBackend) els.statBackend.textContent = backendStatus;
     const summary = [
       { label: "Homepage", value: state.settings.heroTitle || "Judul default" },
       { label: "About Us", value: state.settings.aboutTitle || "Tentang SANDWHEAT" },
@@ -199,6 +230,7 @@
         </div>
       </div>
     `).join("");
+
     els.productList.querySelectorAll("button[data-action]").forEach((button) => {
       button.addEventListener("click", async () => {
         const { action, id } = button.dataset;
@@ -247,36 +279,91 @@
     els.previewFrame.innerHTML = preview;
   }
 
-  async function apiGet(action) {
-    const response = await fetch(`${API_URL}?action=${encodeURIComponent(action)}`, { method: "GET", cache: "no-store", headers: { Accept: "application/json" } });
+  async function apiRequest(action, payload = {}, method = "POST") {
+    const token = readToken();
+    const request = { action, ...(payload || {}) };
+    if (token) request.token = token;
+
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    };
+
+    const url = method === "GET" ? `${API_URL}?action=${encodeURIComponent(action)}${token ? `&token=${encodeURIComponent(token)}` : ""}` : API_URL;
+
+    const init = {
+      method,
+      headers,
+      cache: "no-store"
+    };
+
+    if (method !== "GET") init.body = JSON.stringify(request);
+
+    const response = await fetch(url, init);
     const text = await response.text();
-    let payload = {};
-    if (text) { try { payload = JSON.parse(text); } catch { payload = { raw: text }; } }
-    if (!response.ok && payload.ok !== true) throw new Error(payload.error || payload.message || `HTTP ${response.status}`);
-    return payload;
+    if (!text) return { ok: response.ok, status: response.status };
+
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      return { ok: response.ok, raw: text, status: response.status };
+    }
   }
 
-  async function apiPost(payload) {
-    const response = await fetch(API_URL, { method: "POST", cache: "no-store", headers: { "Content-Type": "text/plain;charset=utf-8", Accept: "application/json" }, body: JSON.stringify(payload) });
-    const text = await response.text();
-    let result = {};
-    if (text) { try { result = JSON.parse(text); } catch { result = { raw: text }; } }
-    if (!response.ok && result.ok !== true) throw new Error(result.error || result.message || `HTTP ${response.status}`);
-    return result;
+  async function validateSession() {
+    const token = readToken();
+    if (!token) return false;
+
+    const actions = ["checkSession", "session", "validateSession", "whoami"];
+    for (const action of actions) {
+      try {
+        const result = await apiRequest(action, {}, "GET");
+        if (result && (result.ok === true || result.valid === true || result.authenticated === true || result.session === "valid" || result.user)) {
+          state.sessionValid = true;
+          return true;
+        }
+        if (result && (result.error || result.message || result.code)) {
+          const normalized = String(result.error || result.message || result.code).toLowerCase();
+          if (normalized.includes("invalid") || normalized.includes("expired") || normalized.includes("forbidden")) break;
+        }
+      } catch (error) {
+        // ignore and try the next fallback
+      }
+    }
+
+    try {
+      const result = await apiRequest("cmsSettings", {}, "GET");
+      if (result && (result.ok === true || result.settings || result.data)) {
+        state.sessionValid = true;
+        return true;
+      }
+    } catch (error) {
+      // if fallback fails, session is not trusted
+    }
+
+    state.sessionValid = false;
+    return false;
+  }
+
+  function clearSession() {
+    writeToken("");
+    state.sessionValid = false;
   }
 
   async function loadSiteData() {
     setLoading(true, "Memuat data dari backend...");
     try {
-      const [settingsResult, productsResult] = await Promise.all([
-        apiGet("cmsSettings").catch(() => ({ ok: false, settings: {} })),
-        apiGet("products").catch(() => ({ ok: false, products: [] }))
-      ]);
-      const mergedSettings = normalizeSettings(settingsResult?.settings || {});
-      const remoteProducts = Array.isArray(productsResult?.products) ? productsResult.products : Array.isArray(productsResult?.data) ? productsResult.data : [];
-      state.settings = mergedSettings;
+      const settingsResult = await apiRequest("cmsSettings", {}, "GET");
+      const productsResult = await apiRequest("products", {}, "GET");
+
+      const settings = normalizeSettings(settingsResult && (settingsResult.settings || settingsResult.data || settingsResult)) || DEFAULT_SETTINGS;
+      const remoteProducts = Array.isArray(productsResult && (productsResult.products || productsResult.data))
+        ? productsResult.products || productsResult.data
+        : [];
+
+      state.settings = settings;
       state.products = remoteProducts.map(normalizeProduct).filter(Boolean);
-      state.revision = Number(settingsResult?.revision || mergedSettings.revision || 0);
+      state.revision = Number(settings.revision || productsResult?.revision || state.revision || 0);
       applySettingsToForm(state.settings);
       renderDashboard();
       renderProducts();
@@ -289,17 +376,18 @@
   }
 
   async function saveSettings() {
-    const token = readStoredToken();
-    if (!token) {
-      setStatus("error", "Sesi admin berakhir. Silakan login kembali.");
+    if (!state.sessionValid) {
+      setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
       toggleLoginScreen(true);
       return;
     }
+
     const payload = getSettingsFromForm();
     setLoading(true, "Menyimpan pengaturan...");
     try {
-      const result = await apiPost({ action: "saveSettings", token, settings: payload, revision: state.revision || 0 });
-      if (!result.ok) throw new Error(result.error || "Server menolak perubahan.");
+      const result = await apiRequest("saveSettings", { settings: payload, revision: state.revision }, "POST");
+      const ok = result && (result.ok === true || result.success === true || result.saved === true || result.status === "ok");
+      if (!ok) throw new Error(result?.error || result?.message || "Server menolak perubahan.");
       state.settings = normalizeSettings(payload);
       state.revision = Number(result.revision || state.revision || 0);
       applySettingsToForm(state.settings);
@@ -313,12 +401,12 @@
   }
 
   async function saveProduct(productInput) {
-    const token = readStoredToken();
-    if (!token) {
-      setStatus("error", "Sesi admin berakhir. Silakan login kembali.");
+    if (!state.sessionValid) {
+      setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
       toggleLoginScreen(true);
       return;
     }
+
     const payload = {
       id: productInput.id || state.editingProductId || String(Date.now()),
       name: productInput.name || "",
@@ -330,10 +418,17 @@
       available: productInput.available !== false,
       status: productInput.active === false ? "inactive" : "active"
     };
+
+    if (!payload.name) {
+      setStatus("error", "Nama menu wajib diisi.");
+      return;
+    }
+
     setLoading(true, "Menyimpan menu...");
     try {
-      const result = await apiPost({ action: "saveProduct", token, product: payload });
-      if (!result.ok) throw new Error(result.error || "Server menolak simpan menu.");
+      const result = await apiRequest("saveProduct", { product: payload }, "POST");
+      const ok = result && (result.ok === true || result.success === true || result.saved === true || result.status === "ok");
+      if (!ok) throw new Error(result?.error || result?.message || "Server menolak simpan menu.");
       state.editingProductId = null;
       resetProductEditor();
       await loadSiteData();
@@ -346,16 +441,17 @@
   }
 
   async function deleteProduct(productId) {
-    const token = readStoredToken();
-    if (!token) {
-      setStatus("error", "Sesi admin berakhir. Silakan login kembali.");
+    if (!state.sessionValid) {
+      setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
       toggleLoginScreen(true);
       return;
     }
+
     setLoading(true, "Menghapus menu...");
     try {
-      const result = await apiPost({ action: "deleteProduct", token, id: productId });
-      if (!result.ok) throw new Error(result.error || "Server gagal menghapus menu.");
+      const result = await apiRequest("deleteProduct", { id: productId }, "POST");
+      const ok = result && (result.ok === true || result.success === true || result.deleted === true || result.status === "ok");
+      if (!ok) throw new Error(result?.error || result?.message || "Server gagal menghapus menu.");
       await loadSiteData();
       setStatus("success", "Menu berhasil dihapus.");
     } catch (error) {
@@ -365,48 +461,52 @@
     }
   }
 
-  function toggleLoginScreen(showLogin) {
-    if (showLogin) {
-      els.loginScreen.hidden = false;
-      els.appRoot.style.display = "none";
-      return;
-    }
-    els.loginScreen.hidden = true;
-    els.appRoot.style.display = "flex";
-  }
-
-  async function handleLogin(event) {
+  async function login(event) {
     event.preventDefault();
     const email = els.adminEmail.value.trim();
     const password = els.adminPassword.value;
+
     if (!email || !password) {
       setStatus("error", "Email dan password harus diisi.");
       return;
     }
+
     setLoading(true, "Mencoba login admin...");
     try {
-      const result = await apiPost({ action: "login", email, password });
-      if (!result.ok || !result.token) throw new Error(result.error || "Kredensial tidak valid.");
-      sessionStorage.setItem(TOKEN_KEY, result.token);
-      els.adminPassword.value = "";
+      const result = await apiRequest("login", { email, password }, "POST");
+      const token = result?.token || result?.sessionToken || result?.data?.token || result?.data?.sessionToken || "";
+      const ok = result && (result.ok === true || result.success === true || result.status === "ok" || Boolean(token));
+      if (!ok) throw new Error(result?.error || result?.message || "Kredensial tidak valid.");
+
+      writeToken(token || readToken());
+      const verified = await validateSession();
+      if (!verified) throw new Error("Backend belum mengonfirmasi sesi yang valid.");
+
+      state.sessionValid = true;
       toggleLoginScreen(false);
-      await loadSiteData();
       setStatus("success", "Login berhasil.");
+      await loadSiteData();
     } catch (error) {
+      clearSession();
+      toggleLoginScreen(true);
       setStatus("error", `Login gagal: ${error.message}`);
     } finally {
       setLoading(false, "");
     }
   }
 
-  function logout() {
-    const token = readStoredToken();
-    if (token) apiPost({ action: "logout", token }).catch(() => undefined);
-    sessionStorage.removeItem(TOKEN_KEY);
-    els.adminEmail.value = "";
-    els.adminPassword.value = "";
-    toggleLoginScreen(true);
-    setStatus("success", "Anda telah logout.");
+  async function logout() {
+    const token = readToken();
+    try {
+      if (token) await apiRequest("logout", { token }, "POST");
+    } catch (error) {
+      // ignore server-side logout error and clear local session
+    } finally {
+      clearSession();
+      state.sessionValid = false;
+      toggleLoginScreen(true);
+      setStatus("success", "Anda telah logout.");
+    }
   }
 
   function bindEvents() {
@@ -414,7 +514,7 @@
     els.saveBtn.addEventListener("click", saveSettings);
     els.cancelBtn.addEventListener("click", () => applySettingsToForm(state.settings));
     els.logoutBtn.addEventListener("click", logout);
-    els.loginForm.addEventListener("submit", handleLogin);
+    els.loginForm.addEventListener("submit", login);
     els.newMenuBtn.addEventListener("click", () => { resetProductEditor(); updateView("menu"); });
     els.resetProductBtn.addEventListener("click", resetProductEditor);
     els.productForm.addEventListener("submit", async (event) => {
@@ -429,27 +529,43 @@
         active: els.productActive.checked,
         available: els.productAvailable.checked
       };
-      if (!payload.name) {
-        setStatus("error", "Nama menu wajib diisi.");
-        return;
-      }
       await saveProduct(payload);
     });
   }
 
-  function bootstrap() {
+  async function bootstrap() {
     bindEvents();
     resetProductEditor();
     applySettingsToForm(DEFAULT_SETTINGS);
     renderDashboard();
     renderProducts();
     updateView("dashboard");
-    if (readStoredToken()) {
+
+    toggleLoginScreen(true);
+    setStatus("success", "Panel siap. Silakan login admin.");
+
+    const token = readToken();
+    if (!token) return;
+
+    setLoading(true, "Memeriksa sesi admin...");
+    try {
+      const valid = await validateSession();
+      if (!valid) {
+        clearSession();
+        toggleLoginScreen(true);
+        setStatus("error", "Sesi kedaluwarsa atau tidak valid. Silakan login kembali.");
+        return;
+      }
+      state.sessionValid = true;
       toggleLoginScreen(false);
-      loadSiteData();
-    } else {
+      setStatus("success", "Sesi valid. Dashboard aktif.");
+      await loadSiteData();
+    } catch (error) {
+      clearSession();
       toggleLoginScreen(true);
-      setStatus("success", "Panel siap. Silakan login admin.");
+      setStatus("error", `Validasi sesi gagal: ${error.message}`);
+    } finally {
+      setLoading(false, "");
     }
   }
 

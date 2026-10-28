@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="./assets/admin.css" />
 </head>
 <body>
-  <div id="appRoot" class="admin-shell">
+  <div id="appRoot" class="admin-shell" hidden>
     <aside class="sidebar">
       <div class="brand-block">
         <div class="brand-mark">S</div>
@@ -50,7 +50,7 @@
           <article class="stat-card"><span>Total menu</span><strong id="statMenuCount">0</strong></article>
           <article class="stat-card"><span>Aktif</span><strong id="statActiveCount">0</strong></article>
           <article class="stat-card"><span>Nonaktif</span><strong id="statInactiveCount">0</strong></article>
-          <article class="stat-card"><span>Versi data</span><strong id="statRevision">0</strong></article>
+          <article class="stat-card"><span>Status backend</span><strong id="statBackend">-</strong></article>
         </div>
         <div class="panel-card"><h2>Ringkasan website</h2><div id="dashboardSummary" class="summary-list"></div></div>
       </section>
@@ -138,7 +138,7 @@
     </main>
   </div>
 
-  <div id="loginScreen" class="login-screen" hidden>
+  <div id="loginScreen" class="login-screen">
     <div class="login-card">
       <div class="brand-block login-brand">
         <div class="brand-mark">S</div>
