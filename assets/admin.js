@@ -93,18 +93,27 @@
 
   function setLoading(flag, message) {
     state.loading = flag;
-    const actions = [els.saveBtn, els.cancelBtn, els.logoutBtn, els.saveProductBtn, els.newMenuBtn];
+    const actions = [
+      els.saveBtn,
+      els.cancelBtn,
+      els.logoutBtn,
+      els.saveProductBtn,
+      els.newMenuBtn,
+      els.resetProductBtn
+    ].filter(Boolean);
+
     actions.forEach((button) => {
-      if (button) button.disabled = flag;
+      button.disabled = flag;
     });
+
     if (flag && message) setStatus("loading", message);
   }
 
   function toggleLoginScreen(showApp) {
     if (!els.appRoot || !els.loginScreen) return;
-    const visible = Boolean(showApp);
-    els.appRoot.hidden = !visible;
-    els.loginScreen.hidden = visible;
+    const shouldShowApp = Boolean(showApp);
+    els.appRoot.hidden = !shouldShowApp;
+    els.loginScreen.hidden = shouldShowApp;
   }
 
   function updateView(nextView) {
@@ -191,15 +200,15 @@
 
   function resetProductEditor() {
     state.editingProductId = null;
-    els.productForm.reset();
-    els.productName.value = "";
-    els.productCategory.value = "";
-    els.productPrice.value = "";
-    els.productDescription.value = "";
-    els.productImage.value = "";
-    els.productActive.checked = true;
-    els.productAvailable.checked = true;
-    els.productEditorTitle.textContent = "Tambah menu";
+    if (els.productForm) els.productForm.reset();
+    if (els.productName) els.productName.value = "";
+    if (els.productCategory) els.productCategory.value = "";
+    if (els.productPrice) els.productPrice.value = "";
+    if (els.productDescription) els.productDescription.value = "";
+    if (els.productImage) els.productImage.value = "";
+    if (els.productActive) els.productActive.checked = true;
+    if (els.productAvailable) els.productAvailable.checked = true;
+    if (els.productEditorTitle) els.productEditorTitle.textContent = "Tambah menu";
   }
 
   function renderDashboard() {
@@ -219,12 +228,16 @@
       { label: "Footer", value: state.settings.footerText || "SANDWHEAT" }
     ];
 
-    els.dashboardSummary.innerHTML = summary.map((row) => `
-      <div class="summary-item"><span>${row.label}</span><strong>${row.value}</strong></div>
-    `).join("");
+    if (els.dashboardSummary) {
+      els.dashboardSummary.innerHTML = summary.map((row) => `
+        <div class="summary-item"><span>${row.label}</span><strong>${row.value}</strong></div>
+      `).join("");
+    }
   }
 
   function renderProducts() {
+    if (!els.productList) return;
+
     if (!state.products.length) {
       els.productList.innerHTML = '<div class="panel-card"><p>Belum ada menu. Tambahkan produk baru untuk mulai.</p></div>';
       return;
@@ -254,14 +267,14 @@
 
         if (action === "edit") {
           state.editingProductId = product.id;
-          els.productEditorTitle.textContent = `Edit menu: ${product.name}`;
-          els.productName.value = product.name || "";
-          els.productCategory.value = product.category || "";
-          els.productPrice.value = product.price || "";
-          els.productDescription.value = product.description || "";
-          els.productImage.value = product.image || "";
-          els.productActive.checked = Boolean(product.active);
-          els.productAvailable.checked = Boolean(product.available !== false);
+          if (els.productEditorTitle) els.productEditorTitle.textContent = `Edit menu: ${product.name}`;
+          if (els.productName) els.productName.value = product.name || "";
+          if (els.productCategory) els.productCategory.value = product.category || "";
+          if (els.productPrice) els.productPrice.value = product.price || "";
+          if (els.productDescription) els.productDescription.value = product.description || "";
+          if (els.productImage) els.productImage.value = product.image || "";
+          if (els.productActive) els.productActive.checked = Boolean(product.active);
+          if (els.productAvailable) els.productAvailable.checked = Boolean(product.available !== false);
           updateView("menu");
           return;
         }
@@ -550,27 +563,33 @@
   }
 
   function bindEvents() {
-    els.navItems.forEach((nav) => nav.addEventListener("click", () => updateView(nav.dataset.view)));
-    els.saveBtn.addEventListener("click", saveSettings);
-    els.cancelBtn.addEventListener("click", () => applySettingsToForm(state.settings));
-    els.logoutBtn.addEventListener("click", logout);
-    els.loginForm.addEventListener("submit", login);
-    els.newMenuBtn.addEventListener("click", () => { resetProductEditor(); updateView("menu"); });
-    els.resetProductBtn.addEventListener("click", resetProductEditor);
-    els.productForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const payload = {
-        id: state.editingProductId || String(Date.now()),
-        name: els.productName.value.trim(),
-        category: els.productCategory.value.trim(),
-        description: els.productDescription.value.trim(),
-        image: els.productImage.value.trim(),
-        price: Number(els.productPrice.value || 0),
-        active: els.productActive.checked,
-        available: els.productAvailable.checked
-      };
-      await saveProduct(payload);
-    });
+    if (els.navItems.length) {
+      els.navItems.forEach((nav) => nav.addEventListener("click", () => updateView(nav.dataset.view)));
+    }
+
+    if (els.saveBtn) els.saveBtn.addEventListener("click", saveSettings);
+    if (els.cancelBtn) els.cancelBtn.addEventListener("click", () => applySettingsToForm(state.settings));
+    if (els.logoutBtn) els.logoutBtn.addEventListener("click", logout);
+    if (els.loginForm) els.loginForm.addEventListener("submit", login);
+    if (els.newMenuBtn) els.newMenuBtn.addEventListener("click", () => { resetProductEditor(); updateView("menu"); });
+    if (els.resetProductBtn) els.resetProductBtn.addEventListener("click", resetProductEditor);
+
+    if (els.productForm) {
+      els.productForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const payload = {
+          id: state.editingProductId || String(Date.now()),
+          name: els.productName.value.trim(),
+          category: els.productCategory.value.trim(),
+          description: els.productDescription.value.trim(),
+          image: els.productImage.value.trim(),
+          price: Number(els.productPrice.value || 0),
+          active: els.productActive.checked,
+          available: els.productAvailable.checked
+        };
+        await saveProduct(payload);
+      });
+    }
   }
 
   async function bootstrap() {
