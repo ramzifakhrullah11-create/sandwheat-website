@@ -1,91 +1,269 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin SANDWHEAT</title>
   <link rel="stylesheet" href="./assets/admin.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 760px;
-      margin: 40px auto;
-      padding: 20px;
-      color: #24313a;
-      background: #f5fafc;
-    }
-    main {
-      background: white;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 4px 18px #00000010;
-    }
-    label { display: block; margin-top: 14px; font-weight: 600; }
-    input, textarea {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border: 1px solid #ccd7dc;
-      border-radius: 8px;
-      font: inherit;
-    }
-    button {
-      padding: 11px 16px;
-      margin-top: 16px;
-      border: 0;
-      border-radius: 8px;
-      background: #238b57;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #status { white-space: pre-wrap; margin-top: 16px; }
-    .note { color: #52636c; font-size: 14px; }
-  </style>
 </head>
 <body>
-  <main>
-    <h1>Admin SANDWHEAT</h1>
-    <p class="note">Panel awal untuk menghubungkan pengaturan website ke Google Apps Script.</p>
+  <div id="appRoot" class="admin-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark">S</div>
+        <div>
+          <strong>SANDWHEAT</strong>
+          <small>Admin Panel</small>
+        </div>
+      </div>
 
-    <form id="loginForm">
-      <h2>Login Admin</h2>
-      <label for="email">Email admin</label>
-      <input id="email" type="email" autocomplete="username" required>
+      <nav class="sidebar-nav" aria-label="Navigasi admin">
+        <button class="nav-item active" data-view="dashboard" type="button">Dashboard</button>
+        <button class="nav-item" data-view="menu" type="button">Manajemen Menu</button>
+        <button class="nav-item" data-view="homepage" type="button">Homepage</button>
+        <button class="nav-item" data-view="about" type="button">About Us</button>
+        <button class="nav-item" data-view="contact" type="button">Kontak</button>
+        <button class="nav-item" data-view="appearance" type="button">Tampilan</button>
+        <button class="nav-item" data-view="preview" type="button">Preview</button>
+      </nav>
 
-      <label for="password">Password admin</label>
-      <input id="password" type="password" autocomplete="current-password" required>
+      <button id="logoutBtn" class="btn btn-ghost logout-btn" type="button">Logout</button>
+    </aside>
 
-      <button type="submit">Login</button>
-    </form>
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">SANDWHEAT CMS</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
 
-    <section id="settingsPanel" hidden>
-      <h2>Pengaturan Website</h2>
+        <div class="top-actions">
+          <button id="cancelBtn" class="btn btn-secondary" type="button">Batal</button>
+          <button id="saveBtn" class="btn btn-primary" type="button">Simpan</button>
+        </div>
+      </header>
 
-      <label for="heroTitle">Judul homepage</label>
-      <input id="heroTitle">
+      <div id="statusBanner" class="flash" role="status" aria-live="polite">Panel siap.</div>
 
-      <label for="heroSubtitle">Deskripsi homepage</label>
-      <textarea id="heroSubtitle" rows="3"></textarea>
+      <section id="dashboardView" class="view-panel active">
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span>Total menu</span>
+            <strong id="statMenuCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Aktif</span>
+            <strong id="statActiveCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Nonaktif</span>
+            <strong id="statInactiveCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Versi data</span>
+            <strong id="statRevision">0</strong>
+          </article>
+        </div>
 
-      <label for="aboutTitle">Judul About Us</label>
-      <input id="aboutTitle">
+        <div class="panel-card">
+          <h2>Ringkasan website</h2>
+          <div id="dashboardSummary" class="summary-list"></div>
+        </div>
+      </section>
 
-      <label for="aboutStory">Cerita About Us</label>
-      <textarea id="aboutStory" rows="6"></textarea>
+      <section id="menuView" class="view-panel">
+        <div class="section-header-row">
+          <h2>Manajemen menu</h2>
+          <button id="newMenuBtn" class="btn btn-primary small" type="button">Tambah menu</button>
+        </div>
 
-      <label for="footerText">Teks footer</label>
-      <input id="footerText">
+        <div class="layout-two-col">
+          <div class="panel-card">
+            <h3>Daftar menu</h3>
+            <div id="productList" class="product-list"></div>
+          </div>
 
-      <button id="saveButton" type="button">Simpan Pengaturan</button>
-      <button id="logoutButton" type="button">Logout</button>
-    </section>
+          <div class="panel-card product-editor">
+            <h3 id="productEditorTitle">Tambah menu</h3>
+            <form id="productForm">
+              <label>
+                Nama menu
+                <input id="productName" type="text" placeholder="Nama menu" required>
+              </label>
 
-    <p id="status" role="status" aria-live="polite"></p>
-  </main>
+              <label>
+                Kategori
+                <input id="productCategory" type="text" placeholder="Kategori">
+              </label>
 
-  <script src="./assets/cms-model.js"></script>
-<script src="./assets/admin.js"></script>
+              <label>
+                Harga
+                <input id="productPrice" type="number" min="0" step="100" placeholder="Harga">
+              </label>
+
+              <label>
+                Deskripsi
+                <textarea id="productDescription" rows="4" placeholder="Deskripsi menu"></textarea>
+              </label>
+
+              <label>
+                Foto URL
+                <input id="productImage" type="url" placeholder="https://...jpg">
+              </label>
+
+              <div class="inline-fields">
+                <label class="checkbox-row">
+                  <input id="productActive" type="checkbox" checked>
+                  <span>Aktif</span>
+                </label>
+                <label class="checkbox-row">
+                  <input id="productAvailable" type="checkbox" checked>
+                  <span>Tersedia</span>
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button id="saveProductBtn" class="btn btn-primary" type="submit">Simpan menu</button>
+                <button id="resetProductBtn" class="btn btn-secondary" type="button">Batal</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="homepageView" class="view-panel">
+        <div class="panel-card form-card">
+          <h2>Pengaturan homepage</h2>
+          <label>
+            Judul homepage
+            <input id="heroTitle" type="text" placeholder="Judul homepage">
+          </label>
+          <label>
+            Deskripsi homepage
+            <textarea id="heroSubtitle" rows="3" placeholder="Deskripsi homepage"></textarea>
+          </label>
+          <label>
+            Banner / gambar utama URL
+            <input id="heroImage" type="url" placeholder="https://...jpg">
+          </label>
+          <label>
+            Konten hero tambahan
+            <textarea id="heroContent" rows="4" placeholder="Konten tambahan"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section id="aboutView" class="view-panel">
+        <div class="panel-card form-card">
+          <h2>About Us</h2>
+          <label>
+            Judul About Us
+            <input id="aboutTitle" type="text" placeholder="Judul About Us">
+          </label>
+          <label>
+            Cerita bisnis
+            <textarea id="aboutStory" rows="7" placeholder="Cerita bisnis"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section id="contactView" class="view-panel">
+        <div class="panel-card form-card">
+          <h2>Kontak</h2>
+          <label>
+            Nomor telepon
+            <input id="contactPhone" type="text" placeholder="0812...">
+          </label>
+          <label>
+            WhatsApp
+            <input id="contactWhatsapp" type="text" placeholder="62812...">
+          </label>
+          <label>
+            Informasi bisnis
+            <textarea id="contactBusiness" rows="5" placeholder="Informasi bisnis"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section id="appearanceView" class="view-panel">
+        <div class="panel-card form-card">
+          <h2>Tampilan website</h2>
+          <div class="inline-fields color-grid">
+            <label>
+              Warna utama
+              <input id="primaryColor" type="color">
+            </label>
+            <label>
+              Warna sekunder
+              <input id="secondaryColor" type="color">
+            </label>
+            <label>
+              Warna aksen
+              <input id="accentColor" type="color">
+            </label>
+          </div>
+
+          <label>
+            Urutan bagian halaman
+            <input id="sectionOrder" type="text" placeholder="menu,about,contact">
+          </label>
+
+          <label>
+            Teks footer
+            <input id="footerText" type="text" placeholder="Footer text">
+          </label>
+
+          <div class="inline-fields">
+            <label class="checkbox-row">
+              <input id="showMenu" type="checkbox">
+              <span>Tampilkan menu</span>
+            </label>
+            <label class="checkbox-row">
+              <input id="showAbout" type="checkbox">
+              <span>Tampilkan About</span>
+            </label>
+            <label class="checkbox-row">
+              <input id="showContact" type="checkbox">
+              <span>Tampilkan Kontak</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section id="previewView" class="view-panel">
+        <div class="panel-card preview-card">
+          <h2>Preview perubahan</h2>
+          <div id="previewFrame" class="preview-frame"></div>
+          <p class="preview-note">Preview ini menampilkan ringkasan pengaturan aktif sebelum publikasi. Gunakan tombol simpan untuk mengirim ke backend.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="loginScreen" class="login-screen" hidden>
+    <div class="login-card">
+      <div class="brand-block login-brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <strong>SANDWHEAT</strong>
+          <small>Login Admin</small>
+        </div>
+      </div>
+      <form id="loginForm" novalidate>
+        <label>
+          Email admin
+          <input id="adminEmail" type="email" autocomplete="username" required>
+        </label>
+        <label>
+          Password admin
+          <input id="adminPassword" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn btn-primary full-width">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="./assets/admin.js"></script>
+</body>
+</html>
