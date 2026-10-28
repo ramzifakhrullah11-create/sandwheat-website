@@ -3,6 +3,7 @@
 
   const API_URL = "https://script.google.com/macros/s/AKfycbzY87VYeRRiXkdYTmZu7yUNVNCacAwfLI-N6iBkIUVIZa9IhmnuGjqscD2XhiZO5P1R/exec";
   const TOKEN_KEY = "sandwheat_admin_token";
+
   const DEFAULT_SETTINGS = {
     heroTitle: "Sandwich Gandum, Teman Aktivitasmu",
     heroSubtitle: "Praktis, lezat, dan siap menemani harimu.",
@@ -101,8 +102,9 @@
 
   function toggleLoginScreen(showApp) {
     if (!els.appRoot || !els.loginScreen) return;
-    els.appRoot.hidden = !showApp;
-    els.loginScreen.hidden = showApp;
+    const visible = Boolean(showApp);
+    els.appRoot.hidden = !visible;
+    els.loginScreen.hidden = visible;
   }
 
   function updateView(nextView) {
@@ -113,6 +115,7 @@
     els.navItems.forEach((nav) => {
       nav.classList.toggle("active", nav.dataset.view === nextView);
     });
+
     const pageMap = {
       dashboard: "Dashboard",
       menu: "Manajemen Menu",
@@ -130,6 +133,8 @@
     merged.showAbout = merged.showAbout !== false;
     merged.showMenu = merged.showMenu !== false;
     merged.showContact = merged.showContact !== false;
+    merged.contactBusiness = merged.contactBusiness || merged.businessInfo || DEFAULT_SETTINGS.contactBusiness;
+    merged.businessInfo = merged.businessInfo || merged.contactBusiness || DEFAULT_SETTINGS.contactBusiness;
     merged.revision = Number(merged.revision || 0);
     return merged;
   }
@@ -139,8 +144,10 @@
     const candidateId = String(raw.id || raw.productId || raw.slug || "").trim();
     const candidateName = String(raw.name || raw.title || raw.menuName || raw.productName || "").trim();
     if (!candidateId && !candidateName) return null;
+
     const price = Number(raw.price ?? raw.harga ?? raw.base ?? 0);
     const active = raw.active !== false && raw.isActive !== false && raw.status !== "archived" && raw.status !== "inactive";
+
     return {
       id: candidateId || candidateName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
       name: candidateName,
@@ -159,22 +166,26 @@
     formKeys.forEach((key) => {
       const field = document.getElementById(key);
       if (!field) return;
+
       if (field.type === "checkbox") settings[key] = Boolean(field.checked);
       else if (field.type === "color") settings[key] = field.value || "#000000";
       else settings[key] = field.value ?? "";
     });
+
     return normalizeSettings(settings);
   }
 
   function applySettingsToForm(settings) {
     const safe = normalizeSettings(settings);
     state.settings = safe;
+
     formKeys.forEach((key) => {
       const field = document.getElementById(key);
       if (!field) return;
       if (field.type === "checkbox") field.checked = Boolean(safe[key]);
       else field.value = safe[key] ?? "";
     });
+
     renderPreview();
   }
 
@@ -195,16 +206,19 @@
     const activeCount = state.products.filter((item) => item.active).length;
     const inactiveCount = state.products.length - activeCount;
     const backendStatus = state.sessionValid ? "Aktif" : "Belum login";
+
     if (els.statMenuCount) els.statMenuCount.textContent = String(state.products.length);
     if (els.statActiveCount) els.statActiveCount.textContent = String(activeCount);
     if (els.statInactiveCount) els.statInactiveCount.textContent = String(inactiveCount);
     if (els.statBackend) els.statBackend.textContent = backendStatus;
+
     const summary = [
       { label: "Homepage", value: state.settings.heroTitle || "Judul default" },
       { label: "About Us", value: state.settings.aboutTitle || "Tentang SANDWHEAT" },
       { label: "Kontak", value: state.settings.contactPhone || "08118481107" },
       { label: "Footer", value: state.settings.footerText || "SANDWHEAT" }
     ];
+
     els.dashboardSummary.innerHTML = summary.map((row) => `
       <div class="summary-item"><span>${row.label}</span><strong>${row.value}</strong></div>
     `).join("");
@@ -215,6 +229,7 @@
       els.productList.innerHTML = '<div class="panel-card"><p>Belum ada menu. Tambahkan produk baru untuk mulai.</p></div>';
       return;
     }
+
     els.productList.innerHTML = state.products.map((product) => `
       <div class="product-tile">
         <img class="product-thumb" src="${product.image || "https://images.unsplash.com/photo-1528735602780-2552fd4c4c?auto=format&fit=crop&w=900&q=80"}" alt="${product.name}" />
@@ -236,6 +251,7 @@
         const { action, id } = button.dataset;
         const product = state.products.find((item) => item.id === id);
         if (!product) return;
+
         if (action === "edit") {
           state.editingProductId = product.id;
           els.productEditorTitle.textContent = `Edit menu: ${product.name}`;
@@ -249,10 +265,12 @@
           updateView("menu");
           return;
         }
+
         if (action === "toggle") {
           await saveProduct({ ...product, active: !product.active, status: !product.active ? "active" : "inactive" });
           return;
         }
+
         if (action === "delete") {
           if (!window.confirm(`Hapus menu "${product.name}"?`)) return;
           await deleteProduct(product.id);
@@ -289,25 +307,32 @@
       "Content-Type": "application/json"
     };
 
-    const url = method === "GET" ? `${API_URL}?action=${encodeURIComponent(action)}${token ? `&token=${encodeURIComponent(token)}` : ""}` : API_URL;
+    const url = method === "GET"
+      ? `${API_URL}?action=${encodeURIComponent(action)}${token ? `&token=${encodeURIComponent(token)}` : ""}`
+      : API_URL;
 
     const init = {
       method,
       headers,
       mode: "cors",
+      credentials: "omit",
       cache: "no-store"
     };
 
     if (method !== "GET") init.body = JSON.stringify(request);
 
-    const response = await fetch(url, init);
-    const text = await response.text();
-    if (!text) return { ok: response.ok, status: response.status };
-
     try {
-      return JSON.parse(text);
+      const response = await fetch(url, init);
+      const text = await response.text();
+      if (!text) return { ok: response.ok, status: response.status };
+
+      try {
+        return JSON.parse(text);
+      } catch (error) {
+        return { ok: response.ok, raw: text, status: response.status };
+      }
     } catch (error) {
-      return { ok: response.ok, raw: text, status: response.status };
+      return { ok: false, error: error.message || "Network request failed" };
     }
   }
 
@@ -339,7 +364,12 @@
         }
 
         const errorText = String(result?.error || result?.message || result?.code || "").toLowerCase();
-        if (errorText.includes("invalid") || errorText.includes("expired") || errorText.includes("forbidden") || errorText.includes("unauthorized")) {
+        if (
+          errorText.includes("invalid") ||
+          errorText.includes("expired") ||
+          errorText.includes("forbidden") ||
+          errorText.includes("unauthorized")
+        ) {
           break;
         }
       } catch (error) {
@@ -370,6 +400,7 @@
       state.settings = settings;
       state.products = remoteProducts.map(normalizeProduct).filter(Boolean);
       state.revision = Number(settings.revision || productsResult?.revision || state.revision || 0);
+
       applySettingsToForm(state.settings);
       renderDashboard();
       renderProducts();
@@ -384,7 +415,7 @@
   async function saveSettings() {
     if (!state.sessionValid) {
       setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       return;
     }
 
@@ -394,6 +425,7 @@
       const result = await apiRequest("saveSettings", { settings: payload, revision: state.revision }, "POST");
       const ok = result && (result.ok === true || result.success === true || result.saved === true || result.status === "ok");
       if (!ok) throw new Error(result?.error || result?.message || "Server menolak perubahan.");
+
       state.settings = normalizeSettings(payload);
       state.revision = Number(result.revision || state.revision || 0);
       applySettingsToForm(state.settings);
@@ -409,7 +441,7 @@
   async function saveProduct(productInput) {
     if (!state.sessionValid) {
       setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       return;
     }
 
@@ -435,6 +467,7 @@
       const result = await apiRequest("saveProduct", { product: payload }, "POST");
       const ok = result && (result.ok === true || result.success === true || result.saved === true || result.status === "ok");
       if (!ok) throw new Error(result?.error || result?.message || "Server menolak simpan menu.");
+
       state.editingProductId = null;
       resetProductEditor();
       await loadSiteData();
@@ -449,7 +482,7 @@
   async function deleteProduct(productId) {
     if (!state.sessionValid) {
       setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       return;
     }
 
@@ -458,6 +491,7 @@
       const result = await apiRequest("deleteProduct", { id: productId }, "POST");
       const ok = result && (result.ok === true || result.success === true || result.deleted === true || result.status === "ok");
       if (!ok) throw new Error(result?.error || result?.message || "Server gagal menghapus menu.");
+
       await loadSiteData();
       setStatus("success", "Menu berhasil dihapus.");
     } catch (error) {
@@ -494,7 +528,7 @@
       await loadSiteData();
     } catch (error) {
       clearSession();
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       setStatus("error", `Login gagal: ${error.message}`);
     } finally {
       setLoading(false, "");
@@ -506,11 +540,11 @@
     try {
       if (token) await apiRequest("logout", { token }, "POST");
     } catch (error) {
-      // ignore server-side logout error and clear local session
+      // ignore and clear local session
     } finally {
       clearSession();
       state.sessionValid = false;
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       setStatus("success", "Anda telah logout.");
     }
   }
@@ -562,6 +596,7 @@
         setStatus("error", "Sesi kedaluwarsa atau tidak valid. Silakan login kembali.");
         return;
       }
+
       state.sessionValid = true;
       toggleLoginScreen(true);
       setStatus("success", "Sesi valid. Dashboard aktif.");
