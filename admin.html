@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
   <title>Admin SANDWHEAT</title>
-  <link rel="stylesheet" href="./assets/admin.css">
+  <link rel="stylesheet" href="./assets/admin.css" />
 </head>
 <body>
   <div id="appRoot" class="admin-shell">
@@ -37,7 +37,6 @@
           <p class="eyebrow">SANDWHEAT CMS</p>
           <h1 id="pageTitle">Dashboard</h1>
         </div>
-
         <div class="top-actions">
           <button id="cancelBtn" class="btn btn-secondary" type="button">Batal</button>
           <button id="saveBtn" class="btn btn-primary" type="button">Simpan</button>
@@ -48,28 +47,12 @@
 
       <section id="dashboardView" class="view-panel active">
         <div class="stats-grid">
-          <article class="stat-card">
-            <span>Total menu</span>
-            <strong id="statMenuCount">0</strong>
-          </article>
-          <article class="stat-card">
-            <span>Aktif</span>
-            <strong id="statActiveCount">0</strong>
-          </article>
-          <article class="stat-card">
-            <span>Nonaktif</span>
-            <strong id="statInactiveCount">0</strong>
-          </article>
-          <article class="stat-card">
-            <span>Versi data</span>
-            <strong id="statRevision">0</strong>
-          </article>
+          <article class="stat-card"><span>Total menu</span><strong id="statMenuCount">0</strong></article>
+          <article class="stat-card"><span>Aktif</span><strong id="statActiveCount">0</strong></article>
+          <article class="stat-card"><span>Nonaktif</span><strong id="statInactiveCount">0</strong></article>
+          <article class="stat-card"><span>Versi data</span><strong id="statRevision">0</strong></article>
         </div>
-
-        <div class="panel-card">
-          <h2>Ringkasan website</h2>
-          <div id="dashboardSummary" class="summary-list"></div>
-        </div>
+        <div class="panel-card"><h2>Ringkasan website</h2><div id="dashboardSummary" class="summary-list"></div></div>
       </section>
 
       <section id="menuView" class="view-panel">
@@ -77,52 +60,20 @@
           <h2>Manajemen menu</h2>
           <button id="newMenuBtn" class="btn btn-primary small" type="button">Tambah menu</button>
         </div>
-
         <div class="layout-two-col">
-          <div class="panel-card">
-            <h3>Daftar menu</h3>
-            <div id="productList" class="product-list"></div>
-          </div>
-
+          <div class="panel-card"><h3>Daftar menu</h3><div id="productList" class="product-list"></div></div>
           <div class="panel-card product-editor">
             <h3 id="productEditorTitle">Tambah menu</h3>
             <form id="productForm">
-              <label>
-                Nama menu
-                <input id="productName" type="text" placeholder="Nama menu" required>
-              </label>
-
-              <label>
-                Kategori
-                <input id="productCategory" type="text" placeholder="Kategori">
-              </label>
-
-              <label>
-                Harga
-                <input id="productPrice" type="number" min="0" step="100" placeholder="Harga">
-              </label>
-
-              <label>
-                Deskripsi
-                <textarea id="productDescription" rows="4" placeholder="Deskripsi menu"></textarea>
-              </label>
-
-              <label>
-                Foto URL
-                <input id="productImage" type="url" placeholder="https://...jpg">
-              </label>
-
+              <label>Nama menu<input id="productName" type="text" placeholder="Nama menu" required /></label>
+              <label>Kategori<input id="productCategory" type="text" placeholder="Kategori" /></label>
+              <label>Harga<input id="productPrice" type="number" min="0" step="100" placeholder="Harga" /></label>
+              <label>Deskripsi<textarea id="productDescription" rows="4" placeholder="Deskripsi menu"></textarea></label>
+              <label>Foto URL<input id="productImage" type="url" placeholder="https://...jpg" /></label>
               <div class="inline-fields">
-                <label class="checkbox-row">
-                  <input id="productActive" type="checkbox" checked>
-                  <span>Aktif</span>
-                </label>
-                <label class="checkbox-row">
-                  <input id="productAvailable" type="checkbox" checked>
-                  <span>Tersedia</span>
-                </label>
+                <label class="checkbox-row"><input id="productActive" type="checkbox" checked /> <span>Aktif</span></label>
+                <label class="checkbox-row"><input id="productAvailable" type="checkbox" checked /> <span>Tersedia</span></label>
               </div>
-
               <div class="form-actions">
                 <button id="saveProductBtn" class="btn btn-primary" type="submit">Simpan menu</button>
                 <button id="resetProductBtn" class="btn btn-secondary" type="button">Batal</button>
@@ -135,54 +86,27 @@
       <section id="homepageView" class="view-panel">
         <div class="panel-card form-card">
           <h2>Pengaturan homepage</h2>
-          <label>
-            Judul homepage
-            <input id="heroTitle" type="text" placeholder="Judul homepage">
-          </label>
-          <label>
-            Deskripsi homepage
-            <textarea id="heroSubtitle" rows="3" placeholder="Deskripsi homepage"></textarea>
-          </label>
-          <label>
-            Banner / gambar utama URL
-            <input id="heroImage" type="url" placeholder="https://...jpg">
-          </label>
-          <label>
-            Konten hero tambahan
-            <textarea id="heroContent" rows="4" placeholder="Konten tambahan"></textarea>
-          </label>
+          <label>Judul homepage<input id="heroTitle" type="text" placeholder="Judul homepage" /></label>
+          <label>Deskripsi homepage<textarea id="heroSubtitle" rows="3" placeholder="Deskripsi homepage"></textarea></label>
+          <label>Banner / gambar utama URL<input id="heroImage" type="url" placeholder="https://...jpg" /></label>
+          <label>Konten hero tambahan<textarea id="heroContent" rows="4" placeholder="Konten tambahan"></textarea></label>
         </div>
       </section>
 
       <section id="aboutView" class="view-panel">
         <div class="panel-card form-card">
           <h2>About Us</h2>
-          <label>
-            Judul About Us
-            <input id="aboutTitle" type="text" placeholder="Judul About Us">
-          </label>
-          <label>
-            Cerita bisnis
-            <textarea id="aboutStory" rows="7" placeholder="Cerita bisnis"></textarea>
-          </label>
+          <label>Judul About Us<input id="aboutTitle" type="text" placeholder="Judul About Us" /></label>
+          <label>Cerita bisnis<textarea id="aboutStory" rows="7" placeholder="Cerita bisnis"></textarea></label>
         </div>
       </section>
 
       <section id="contactView" class="view-panel">
         <div class="panel-card form-card">
           <h2>Kontak</h2>
-          <label>
-            Nomor telepon
-            <input id="contactPhone" type="text" placeholder="0812...">
-          </label>
-          <label>
-            WhatsApp
-            <input id="contactWhatsapp" type="text" placeholder="62812...">
-          </label>
-          <label>
-            Informasi bisnis
-            <textarea id="contactBusiness" rows="5" placeholder="Informasi bisnis"></textarea>
-          </label>
+          <label>Nomor telepon<input id="contactPhone" type="text" placeholder="0812..." /></label>
+          <label>WhatsApp<input id="contactWhatsapp" type="text" placeholder="62812..." /></label>
+          <label>Informasi bisnis<textarea id="contactBusiness" rows="5" placeholder="Informasi bisnis"></textarea></label>
         </div>
       </section>
 
@@ -190,43 +114,16 @@
         <div class="panel-card form-card">
           <h2>Tampilan website</h2>
           <div class="inline-fields color-grid">
-            <label>
-              Warna utama
-              <input id="primaryColor" type="color">
-            </label>
-            <label>
-              Warna sekunder
-              <input id="secondaryColor" type="color">
-            </label>
-            <label>
-              Warna aksen
-              <input id="accentColor" type="color">
-            </label>
+            <label>Warna utama<input id="primaryColor" type="color" /></label>
+            <label>Warna sekunder<input id="secondaryColor" type="color" /></label>
+            <label>Warna aksen<input id="accentColor" type="color" /></label>
           </div>
-
-          <label>
-            Urutan bagian halaman
-            <input id="sectionOrder" type="text" placeholder="menu,about,contact">
-          </label>
-
-          <label>
-            Teks footer
-            <input id="footerText" type="text" placeholder="Footer text">
-          </label>
-
+          <label>Urutan bagian halaman<input id="sectionOrder" type="text" placeholder="menu,about,contact" /></label>
+          <label>Teks footer<input id="footerText" type="text" placeholder="Footer text" /></label>
           <div class="inline-fields">
-            <label class="checkbox-row">
-              <input id="showMenu" type="checkbox">
-              <span>Tampilkan menu</span>
-            </label>
-            <label class="checkbox-row">
-              <input id="showAbout" type="checkbox">
-              <span>Tampilkan About</span>
-            </label>
-            <label class="checkbox-row">
-              <input id="showContact" type="checkbox">
-              <span>Tampilkan Kontak</span>
-            </label>
+            <label class="checkbox-row"><input id="showMenu" type="checkbox" /><span>Tampilkan menu</span></label>
+            <label class="checkbox-row"><input id="showAbout" type="checkbox" /><span>Tampilkan About</span></label>
+            <label class="checkbox-row"><input id="showContact" type="checkbox" /><span>Tampilkan Kontak</span></label>
           </div>
         </div>
       </section>
@@ -235,7 +132,7 @@
         <div class="panel-card preview-card">
           <h2>Preview perubahan</h2>
           <div id="previewFrame" class="preview-frame"></div>
-          <p class="preview-note">Preview ini menampilkan ringkasan pengaturan aktif sebelum publikasi. Gunakan tombol simpan untuk mengirim ke backend.</p>
+          <p class="preview-note">Preview ini menampilkan ringkasan pengaturan aktif sebelum publikasi.</p>
         </div>
       </section>
     </main>
@@ -251,14 +148,8 @@
         </div>
       </div>
       <form id="loginForm" novalidate>
-        <label>
-          Email admin
-          <input id="adminEmail" type="email" autocomplete="username" required>
-        </label>
-        <label>
-          Password admin
-          <input id="adminPassword" type="password" autocomplete="current-password" required>
-        </label>
+        <label>Email admin<input id="adminEmail" type="email" autocomplete="username" required /></label>
+        <label>Password admin<input id="adminPassword" type="password" autocomplete="current-password" required /></label>
         <button type="submit" class="btn btn-primary full-width">Login</button>
       </form>
     </div>

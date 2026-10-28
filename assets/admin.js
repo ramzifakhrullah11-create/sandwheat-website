@@ -3,14 +3,13 @@
 
   const API_URL = "https://script.google.com/macros/s/AKfycbxEXGWrfi3Z26DZHgMRyjLht5mDYk-hGb_BngkJfOJpQ3di6kJLpafVCeejNw4RiPyW/exec";
   const TOKEN_KEY = "sandwheat_admin_token";
-
   const DEFAULT_SETTINGS = {
     heroTitle: "Sandwich Gandum, Teman Aktivitasmu",
     heroSubtitle: "Praktis, lezat, dan siap menemani harimu.",
     heroImage: "",
     heroContent: "",
     aboutTitle: "Tentang SANDWHEAT",
-    aboutStory: "SANDWHEAT adalah usaha sandwich berbahan roti gandum yang dikembangkan oleh mahasiswa untuk mahasiswa. Kami hadir bagi mahasiswa dengan aktivitas padat yang membutuhkan makanan praktis dan bergizi.",
+    aboutStory: "SANDWHEAT adalah usaha sandwich berbahan roti gandum yang dikembangkan oleh mahasiswa untuk mahasiswa.",
     contactPhone: "08118481107",
     contactWhatsapp: "628118481107",
     businessInfo: "Jalan Babadan, Yogyakarta",
@@ -25,15 +24,7 @@
     revision: 0
   };
 
-  const state = {
-    loggedIn: false,
-    settings: { ...DEFAULT_SETTINGS },
-    products: [],
-    revision: 0,
-    activeView: "dashboard",
-    editingProductId: null,
-    pendingSave: false
-  };
+  const state = { settings: { ...DEFAULT_SETTINGS }, products: [], revision: 0, activeView: "dashboard", editingProductId: null };
 
   const els = {
     appRoot: document.getElementById("appRoot"),
@@ -69,28 +60,13 @@
   };
 
   const formKeys = [
-    "heroTitle",
-    "heroSubtitle",
-    "heroImage",
-    "heroContent",
-    "aboutTitle",
-    "aboutStory",
-    "contactPhone",
-    "contactWhatsapp",
-    "businessInfo",
-    "primaryColor",
-    "secondaryColor",
-    "accentColor",
-    "sectionOrder",
-    "footerText",
-    "showMenu",
-    "showAbout",
-    "showContact"
+    "heroTitle", "heroSubtitle", "heroImage", "heroContent",
+    "aboutTitle", "aboutStory", "contactPhone", "contactWhatsapp", "contactBusiness",
+    "primaryColor", "secondaryColor", "accentColor", "sectionOrder", "footerText",
+    "showMenu", "showAbout", "showContact"
   ];
 
-  function readStoredToken() {
-    return sessionStorage.getItem(TOKEN_KEY) || "";
-  }
+  function readStoredToken() { return sessionStorage.getItem(TOKEN_KEY) || ""; }
 
   function setStatus(type, message) {
     if (!els.statusBanner) return;
@@ -100,26 +76,43 @@
 
   function updateView(nextView) {
     state.activeView = nextView;
-    const panelViews = document.querySelectorAll(".view-panel");
-    panelViews.forEach((panel) => {
+    document.querySelectorAll(".view-panel").forEach((panel) => {
       panel.classList.toggle("active", panel.id === `${nextView}View`);
     });
-
     els.navItems.forEach((nav) => {
       nav.classList.toggle("active", nav.dataset.view === nextView);
     });
-
-    const pageMap = {
-      dashboard: "Dashboard",
-      menu: "Manajemen Menu",
-      homepage: "Homepage",
-      about: "About Us",
-      contact: "Kontak",
-      appearance: "Tampilan Website",
-      preview: "Preview Perubahan"
-    };
-
+    const pageMap = { dashboard: "Dashboard", menu: "Manajemen Menu", homepage: "Homepage", about: "About Us", contact: "Kontak", appearance: "Tampilan Website", preview: "Preview Perubahan" };
     els.pageTitle.textContent = pageMap[nextView] || "Dashboard";
+  }
+
+  function normalizeSettings(raw) {
+    const merged = { ...DEFAULT_SETTINGS, ...(raw || {}) };
+    merged.showAbout = merged.showAbout !== false;
+    merged.showMenu = merged.showMenu !== false;
+    merged.showContact = merged.showContact !== false;
+    merged.revision = Number(merged.revision || 0);
+    return merged;
+  }
+
+  function normalizeProduct(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    const id = String(raw.id || raw.productId || raw.slug || "").trim();
+    const name = String(raw.name || raw.title || raw.menuName || "").trim();
+    if (!id && !name) return null;
+    const price = Number(raw.price ?? raw.harga ?? raw.base ?? 0);
+    const active = raw.active !== false && raw.isActive !== false && raw.status !== "archived" && raw.status !== "inactive";
+    return {
+      id: id || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+      name,
+      category: String(raw.category || raw.kategori || "Umum").trim(),
+      description: String(raw.description || raw.desc || "").trim(),
+      image: String(raw.image || raw.img || raw.photo || "").trim(),
+      price: Number.isFinite(price) ? price : 0,
+      active,
+      available: raw.available !== false && raw.isAvailable !== false,
+      status: active ? "active" : "inactive"
+    };
   }
 
   function setLoading(flag, text) {
@@ -128,82 +121,30 @@
     els.logoutBtn.disabled = flag;
     els.saveProductBtn.disabled = flag;
     els.newMenuBtn.disabled = flag;
-
-    if (flag && text) {
-      setStatus("loading", text);
-    }
-  }
-
-  function normalizeSettings(raw) {
-    const safe = { ...DEFAULT_SETTINGS, ...(raw || {}) };
-    safe.showAbout = Boolean(safe.showAbout !== false);
-    safe.showMenu = Boolean(safe.showMenu !== false);
-    safe.showContact = Boolean(safe.showContact !== false);
-    safe.revision = Number(safe.revision || 0);
-    return safe;
-  }
-
-  function normalizeProduct(raw) {
-    if (!raw || typeof raw !== "object") return null;
-
-    const id = String(raw.id || raw.productId || raw.slug || "").trim();
-    const name = String(raw.name || raw.title || "").trim();
-    if (!id && !name) return null;
-
-    const priceNumber = Number(raw.price ?? raw.harga ?? raw.base ?? 0);
-    const active = raw.active !== false && raw.isActive !== false && raw.status !== "archived" && raw.status !== "inactive";
-    const available = raw.available !== false && raw.isAvailable !== false;
-
-    return {
-      id: id || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
-      name,
-      category: String(raw.category || raw.kategori || "Umum").trim(),
-      description: String(raw.description || raw.desc || "").trim(),
-      image: String(raw.image || raw.img || raw.photo || "").trim(),
-      price: Number.isFinite(priceNumber) ? priceNumber : 0,
-      active,
-      available,
-      status: active ? "active" : "inactive"
-    };
+    if (flag && text) setStatus("loading", text);
   }
 
   function getSettingsFromForm() {
     const settings = { ...state.settings };
-
     formKeys.forEach((key) => {
       const field = document.getElementById(key);
       if (!field) return;
-
-      if (field.type === "checkbox") {
-        settings[key] = field.checked;
-      } else if (field.type === "color") {
-        settings[key] = field.value || "#000000";
-      } else {
-        settings[key] = field.value;
-      }
+      if (field.type === "checkbox") settings[key] = field.checked;
+      else if (field.type === "color") settings[key] = field.value || "#000000";
+      else settings[key] = field.value;
     });
-
     return normalizeSettings(settings);
   }
 
   function applySettingsToForm(settings) {
     const safe = normalizeSettings(settings);
     state.settings = safe;
-
     formKeys.forEach((key) => {
       const field = document.getElementById(key);
       if (!field) return;
-
-      if (field.type === "checkbox") {
-        field.checked = Boolean(safe[key]);
-      } else {
-        field.value = safe[key] ?? "";
-      }
+      if (field.type === "checkbox") field.checked = Boolean(safe[key]);
+      else field.value = safe[key] ?? "";
     });
-
-    document.documentElement.style.setProperty("--primary", safe.primaryColor || DEFAULT_SETTINGS.primaryColor);
-    document.documentElement.style.setProperty("--secondary", safe.secondaryColor || DEFAULT_SETTINGS.secondaryColor);
-    document.documentElement.style.setProperty("--accent", safe.accentColor || DEFAULT_SETTINGS.accentColor);
     renderPreview();
   }
 
@@ -223,27 +164,19 @@
   function renderDashboard() {
     const activeCount = state.products.filter((item) => item.active).length;
     const inactiveCount = state.products.length - activeCount;
-
     els.statMenuCount.textContent = String(state.products.length);
     els.statActiveCount.textContent = String(activeCount);
     els.statInactiveCount.textContent = String(inactiveCount);
     els.statRevision.textContent = String(state.revision || 0);
-
     const summary = [
       { label: "Homepage", value: state.settings.heroTitle || "Judul default" },
       { label: "About Us", value: state.settings.aboutTitle || "Tentang SANDWHEAT" },
       { label: "Kontak", value: state.settings.contactPhone || "08118481107" },
       { label: "Footer", value: state.settings.footerText || "SANDWHEAT" }
     ];
-
-    els.dashboardSummary.innerHTML = summary
-      .map((row) => `
-        <div class="summary-item">
-          <span>${row.label}</span>
-          <strong>${row.value}</strong>
-        </div>
-      `)
-      .join("");
+    els.dashboardSummary.innerHTML = summary.map((row) => `
+      <div class="summary-item"><span>${row.label}</span><strong>${row.value}</strong></div>
+    `).join("");
   }
 
   function renderProducts() {
@@ -251,34 +184,26 @@
       els.productList.innerHTML = '<div class="panel-card"><p>Belum ada menu. Tambahkan produk baru untuk mulai.</p></div>';
       return;
     }
-
-    els.productList.innerHTML = state.products
-      .map((product) => `
-        <div class="product-tile">
-          <img class="product-thumb" src="${product.image || "https://images.unsplash.com/photo-1528735602780-2552fd4c4c"}" alt="${product.name}">
-          <div class="product-info">
-            <strong>${product.name}</strong>
-            <div class="product-meta">
-              <span>${product.category || "Umum"}</span>
-              <span>Rp ${Number(product.price || 0).toLocaleString("id-ID")}</span>
-            </div>
-          </div>
-          <div class="product-actions">
-            <span class="product-pill ${product.active ? "status-active" : "status-inactive"}">${product.active ? "Aktif" : "Nonaktif"}</span>
-            <button type="button" data-action="edit" data-id="${product.id}">Edit</button>
-            <button type="button" data-action="toggle" data-id="${product.id}">${product.active ? "Nonaktifkan" : "Aktifkan"}</button>
-            <button type="button" data-action="delete" data-id="${product.id}">Hapus</button>
-          </div>
+    els.productList.innerHTML = state.products.map((product) => `
+      <div class="product-tile">
+        <img class="product-thumb" src="${product.image || "https://images.unsplash.com/photo-1528735602780-2552fd4c4c?auto=format&fit=crop&w=900&q=80"}" alt="${product.name}" />
+        <div class="product-info">
+          <strong>${product.name}</strong>
+          <div class="product-meta"><span>${product.category || "Umum"}</span><span>Rp ${Number(product.price || 0).toLocaleString("id-ID")}</span></div>
         </div>
-      `)
-      .join("");
-
+        <div class="product-actions">
+          <span class="product-pill ${product.active ? "status-active" : "status-inactive"}">${product.active ? "Aktif" : "Nonaktif"}</span>
+          <button type="button" data-action="edit" data-id="${product.id}">Edit</button>
+          <button type="button" data-action="toggle" data-id="${product.id}">${product.active ? "Nonaktifkan" : "Aktifkan"}</button>
+          <button type="button" data-action="delete" data-id="${product.id}">Hapus</button>
+        </div>
+      </div>
+    `).join("");
     els.productList.querySelectorAll("button[data-action]").forEach((button) => {
       button.addEventListener("click", async () => {
         const { action, id } = button.dataset;
         const product = state.products.find((item) => item.id === id);
         if (!product) return;
-
         if (action === "edit") {
           state.editingProductId = product.id;
           els.productEditorTitle.textContent = `Edit menu: ${product.name}`;
@@ -292,13 +217,10 @@
           updateView("menu");
           return;
         }
-
         if (action === "toggle") {
           await saveProduct({ ...product, active: !product.active, status: !product.active ? "active" : "inactive" });
-          await loadSiteData();
           return;
         }
-
         if (action === "delete") {
           if (!window.confirm(`Hapus menu "${product.name}"?`)) return;
           await deleteProduct(product.id);
@@ -316,96 +238,45 @@
           <p style="margin:0;line-height:1.6;">${state.settings.heroSubtitle || 'Praktis, lezat, dan siap menemani harimu.'}</p>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(120px,1fr));gap:12px;">
-          <div style="background:#fff;border:1px solid #dfe9e2;border-radius:12px;padding:16px;">
-            <strong>About</strong>
-            <div style="font-size:0.9rem;color:#5d6d62;margin-top:8px;">${state.settings.aboutTitle || 'Tentang SANDWHEAT'}</div>
-          </div>
-          <div style="background:#fff;border:1px solid #dfe9e2;border-radius:12px;padding:16px;">
-            <strong>Kontak</strong>
-            <div style="font-size:0.9rem;color:#5d6d62;margin-top:8px;">${state.settings.contactPhone || '08118481107'}</div>
-          </div>
-          <div style="background:#fff;border:1px solid #dfe9e2;border-radius:12px;padding:16px;">
-            <strong>Footer</strong>
-            <div style="font-size:0.9rem;color:#5d6d62;margin-top:8px;">${state.settings.footerText || 'SANDWHEAT'}</div>
-          </div>
+          <div style="background:#fff;border:1px solid #dfe9e2;border-radius:12px;padding:16px;"><strong>About</strong><div style="font-size:0.9rem;color:#5d6d62;margin-top:8px;">${state.settings.aboutTitle || 'Tentang SANDWHEAT'}</div></div>
+          <div style="background:#fff;border:1px solid #dfe9e2;border-radius:12px;padding:16px;"><strong>Kontak</strong><div style="font-size:0.9rem;color:#5d6d62;margin-top:8px;">${state.settings.contactPhone || '08118481107'}</div></div>
+          <div style="background:#fff;border:1px solid #dfe9e2;border-radius:12px;padding:16px;"><strong>Footer</strong><div style="font-size:0.9rem;color:#5d6d62;margin-top:8px;">${state.settings.footerText || 'SANDWHEAT'}</div></div>
         </div>
       </div>
     `;
-
     els.previewFrame.innerHTML = preview;
   }
 
   async function apiGet(action) {
-    const response = await fetch(`${API_URL}?action=${encodeURIComponent(action)}`, {
-      method: "GET",
-      cache: "no-store",
-      headers: { Accept: "application/json" }
-    });
-
+    const response = await fetch(`${API_URL}?action=${encodeURIComponent(action)}`, { method: "GET", cache: "no-store", headers: { Accept: "application/json" } });
     const text = await response.text();
     let payload = {};
-    if (text) {
-      try {
-        payload = JSON.parse(text);
-      } catch {
-        payload = { raw: text };
-      }
-    }
-
-    if (!response.ok && payload.ok !== true) {
-      throw new Error(payload.error || payload.message || `HTTP ${response.status}`);
-    }
-
+    if (text) { try { payload = JSON.parse(text); } catch { payload = { raw: text }; } }
+    if (!response.ok && payload.ok !== true) throw new Error(payload.error || payload.message || `HTTP ${response.status}`);
     return payload;
   }
 
   async function apiPost(payload) {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-        Accept: "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-
+    const response = await fetch(API_URL, { method: "POST", cache: "no-store", headers: { "Content-Type": "text/plain;charset=utf-8", Accept: "application/json" }, body: JSON.stringify(payload) });
     const text = await response.text();
     let result = {};
-    if (text) {
-      try {
-        result = JSON.parse(text);
-      } catch {
-        result = { raw: text };
-      }
-    }
-
-    if (!response.ok && result.ok !== true) {
-      throw new Error(result.error || result.message || `HTTP ${response.status}`);
-    }
-
+    if (text) { try { result = JSON.parse(text); } catch { result = { raw: text }; } }
+    if (!response.ok && result.ok !== true) throw new Error(result.error || result.message || `HTTP ${response.status}`);
     return result;
   }
 
   async function loadSiteData() {
     setLoading(true, "Memuat data dari backend...");
-
     try {
       const [settingsResult, productsResult] = await Promise.all([
         apiGet("cmsSettings").catch(() => ({ ok: false, settings: {} })),
         apiGet("products").catch(() => ({ ok: false, products: [] }))
       ]);
-
-      const mergedSettings = normalizeSettings(settingsResult && settingsResult.settings ? settingsResult.settings : {});
-      const remoteProducts = Array.isArray(productsResult.products) ? productsResult.products : Array.isArray(productsResult.data) ? productsResult.data : [];
-      const validProducts = remoteProducts
-        .map(normalizeProduct)
-        .filter(Boolean);
-
+      const mergedSettings = normalizeSettings(settingsResult?.settings || {});
+      const remoteProducts = Array.isArray(productsResult?.products) ? productsResult.products : Array.isArray(productsResult?.data) ? productsResult.data : [];
       state.settings = mergedSettings;
-      state.products = validProducts.length ? validProducts : [];
-      state.revision = Number((settingsResult && settingsResult.revision) || mergedSettings.revision || 0);
-
+      state.products = remoteProducts.map(normalizeProduct).filter(Boolean);
+      state.revision = Number(settingsResult?.revision || mergedSettings.revision || 0);
       applySettingsToForm(state.settings);
       renderDashboard();
       renderProducts();
@@ -424,22 +295,11 @@
       toggleLoginScreen(true);
       return;
     }
-
     const payload = getSettingsFromForm();
     setLoading(true, "Menyimpan pengaturan...");
-
     try {
-      const result = await apiPost({
-        action: "saveSettings",
-        token,
-        settings: payload,
-        revision: state.revision || 0
-      });
-
-      if (!result.ok) {
-        throw new Error(result.error || "Server menolak perubahan.");
-      }
-
+      const result = await apiPost({ action: "saveSettings", token, settings: payload, revision: state.revision || 0 });
+      if (!result.ok) throw new Error(result.error || "Server menolak perubahan.");
       state.settings = normalizeSettings(payload);
       state.revision = Number(result.revision || state.revision || 0);
       applySettingsToForm(state.settings);
@@ -459,8 +319,7 @@
       toggleLoginScreen(true);
       return;
     }
-
-    const formPayload = {
+    const payload = {
       id: productInput.id || state.editingProductId || String(Date.now()),
       name: productInput.name || "",
       category: productInput.category || "Umum",
@@ -471,20 +330,10 @@
       available: productInput.available !== false,
       status: productInput.active === false ? "inactive" : "active"
     };
-
     setLoading(true, "Menyimpan menu...");
-
     try {
-      const result = await apiPost({
-        action: "saveProduct",
-        token,
-        product: formPayload
-      });
-
-      if (!result.ok) {
-        throw new Error(result.error || "Server menolak simpan menu.");
-      }
-
+      const result = await apiPost({ action: "saveProduct", token, product: payload });
+      if (!result.ok) throw new Error(result.error || "Server menolak simpan menu.");
       state.editingProductId = null;
       resetProductEditor();
       await loadSiteData();
@@ -503,20 +352,10 @@
       toggleLoginScreen(true);
       return;
     }
-
     setLoading(true, "Menghapus menu...");
-
     try {
-      const result = await apiPost({
-        action: "deleteProduct",
-        token,
-        id: productId
-      });
-
-      if (!result.ok) {
-        throw new Error(result.error || "Server gagal menghapus menu.");
-      }
-
+      const result = await apiPost({ action: "deleteProduct", token, id: productId });
+      if (!result.ok) throw new Error(result.error || "Server gagal menghapus menu.");
       await loadSiteData();
       setStatus("success", "Menu berhasil dihapus.");
     } catch (error) {
@@ -532,7 +371,6 @@
       els.appRoot.style.display = "none";
       return;
     }
-
     els.loginScreen.hidden = true;
     els.appRoot.style.display = "flex";
   }
@@ -541,25 +379,19 @@
     event.preventDefault();
     const email = els.adminEmail.value.trim();
     const password = els.adminPassword.value;
-
     if (!email || !password) {
       setStatus("error", "Email dan password harus diisi.");
       return;
     }
-
     setLoading(true, "Mencoba login admin...");
-
     try {
       const result = await apiPost({ action: "login", email, password });
-      if (!result.ok || !result.token) {
-        throw new Error(result.error || "Kredensial tidak valid.");
-      }
-
+      if (!result.ok || !result.token) throw new Error(result.error || "Kredensial tidak valid.");
       sessionStorage.setItem(TOKEN_KEY, result.token);
       els.adminPassword.value = "";
       toggleLoginScreen(false);
-      setStatus("success", "Login berhasil. Memuat data admin...");
       await loadSiteData();
+      setStatus("success", "Login berhasil.");
     } catch (error) {
       setStatus("error", `Login gagal: ${error.message}`);
     } finally {
@@ -569,30 +401,21 @@
 
   function logout() {
     const token = readStoredToken();
-    if (token) {
-      apiPost({ action: "logout", token }).catch(() => undefined);
-    }
+    if (token) apiPost({ action: "logout", token }).catch(() => undefined);
     sessionStorage.removeItem(TOKEN_KEY);
     els.adminEmail.value = "";
     els.adminPassword.value = "";
-    state.loggedIn = false;
     toggleLoginScreen(true);
     setStatus("success", "Anda telah logout.");
   }
 
   function bindEvents() {
-    els.navItems.forEach((nav) => {
-      nav.addEventListener("click", () => updateView(nav.dataset.view));
-    });
-
+    els.navItems.forEach((nav) => nav.addEventListener("click", () => updateView(nav.dataset.view)));
     els.saveBtn.addEventListener("click", saveSettings);
     els.cancelBtn.addEventListener("click", () => applySettingsToForm(state.settings));
     els.logoutBtn.addEventListener("click", logout);
     els.loginForm.addEventListener("submit", handleLogin);
-    els.newMenuBtn.addEventListener("click", () => {
-      resetProductEditor();
-      updateView("menu");
-    });
+    els.newMenuBtn.addEventListener("click", () => { resetProductEditor(); updateView("menu"); });
     els.resetProductBtn.addEventListener("click", resetProductEditor);
     els.productForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -606,12 +429,10 @@
         active: els.productActive.checked,
         available: els.productAvailable.checked
       };
-
       if (!payload.name) {
         setStatus("error", "Nama menu wajib diisi.");
         return;
       }
-
       await saveProduct(payload);
     });
   }
@@ -619,13 +440,11 @@
   function bootstrap() {
     bindEvents();
     resetProductEditor();
-    applySettingsToForm(state.settings);
+    applySettingsToForm(DEFAULT_SETTINGS);
     renderDashboard();
     renderProducts();
     updateView("dashboard");
-
-    const token = readStoredToken();
-    if (token) {
+    if (readStoredToken()) {
       toggleLoginScreen(false);
       loadSiteData();
     } else {
