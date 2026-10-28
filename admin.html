@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin SANDWHEAT</title>
+  <link rel="stylesheet" href="./assets/admin.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 760px;
+      margin: 40px auto;
+      padding: 20px;
+      color: #24313a;
+      background: #f5fafc;
+    }
+    main {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 4px 18px #00000010;
+    }
+    label { display: block; margin-top: 14px; font-weight: 600; }
+    input, textarea {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccd7dc;
+      border-radius: 8px;
+      font: inherit;
+    }
+    button {
+      padding: 11px 16px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 8px;
+      background: #238b57;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #status { white-space: pre-wrap; margin-top: 16px; }
+    .note { color: #52636c; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Admin SANDWHEAT</h1>
+    <p class="note">Panel awal untuk menghubungkan pengaturan website ke Google Apps Script.</p>
+
+    <form id="loginForm">
+      <h2>Login Admin</h2>
+      <label for="email">Email admin</label>
+      <input id="email" type="email" autocomplete="username" required>
+
+      <label for="password">Password admin</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <section id="settingsPanel" hidden>
+      <h2>Pengaturan Website</h2>
+
+      <label for="heroTitle">Judul homepage</label>
+      <input id="heroTitle">
+
+      <label for="heroSubtitle">Deskripsi homepage</label>
+      <textarea id="heroSubtitle" rows="3"></textarea>
+
+      <label for="aboutTitle">Judul About Us</label>
+      <input id="aboutTitle">
+
+      <label for="aboutStory">Cerita About Us</label>
+      <textarea id="aboutStory" rows="6"></textarea>
+
+      <label for="footerText">Teks footer</label>
+      <input id="footerText">
+
+      <button id="saveButton" type="button">Simpan Pengaturan</button>
+      <button id="logoutButton" type="button">Logout</button>
+    </section>
+
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="./assets/cms-model.js"></script>
+  <script>
+    const statusBox = document.getElementById("status");
+    statusBox.textContent =
+      "Tampilan awal berhasil dimuat. Koneksi login dan simpan akan dipasang setelah backend diverifikasi.";
+  </script>
+</body>
+</html>
