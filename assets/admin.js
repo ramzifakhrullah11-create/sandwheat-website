@@ -1,9 +1,8 @@
 (() => {
   "use strict";
 
-  const API_URL = "https://script.google.com/macros/s/AKfycbzY87VYeRRiXkdYTmZu7yUNVNCacAwfLI-N6iBkIUVIZa9IhmnuGjqscD2XhiZO5P1R/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzELHasyTNbY7qsfkmMR_6gispK_g9rYBYVbo4qrKuNEpUMASPhhkGMBxnN26YySDv/exec";
   const TOKEN_KEY = "sandwheat_admin_token";
-
   const DEFAULT_SETTINGS = {
     heroTitle: "Sandwich Gandum, Teman Aktivitasmu",
     heroSubtitle: "Praktis, lezat, dan siap menemani harimu.",
@@ -13,7 +12,7 @@
     aboutStory: "SANDWHEAT adalah usaha sandwich berbahan roti gandum yang dikembangkan oleh mahasiswa untuk mahasiswa.",
     contactPhone: "08118481107",
     contactWhatsapp: "628118481107",
-    contactBusiness: "Jalan Babadan, Yogyakarta",
+    businessInfo: "Jalan Babadan, Yogyakarta",
     primaryColor: "#75C9E7",
     secondaryColor: "#238B57",
     accentColor: "#F4D35E",
@@ -93,27 +92,17 @@
 
   function setLoading(flag, message) {
     state.loading = flag;
-    const actions = [
-      els.saveBtn,
-      els.cancelBtn,
-      els.logoutBtn,
-      els.saveProductBtn,
-      els.newMenuBtn,
-      els.resetProductBtn
-    ].filter(Boolean);
-
+    const actions = [els.saveBtn, els.cancelBtn, els.logoutBtn, els.saveProductBtn, els.newMenuBtn];
     actions.forEach((button) => {
-      button.disabled = flag;
+      if (button) button.disabled = flag;
     });
-
     if (flag && message) setStatus("loading", message);
   }
 
-  function toggleLoginScreen(showApp) {
+  function toggleLoginScreen(showLogin) {
     if (!els.appRoot || !els.loginScreen) return;
-    const shouldShowApp = Boolean(showApp);
-    els.appRoot.hidden = !shouldShowApp;
-    els.loginScreen.hidden = shouldShowApp;
+    els.appRoot.hidden = !showLogin ? false : true;
+    els.loginScreen.hidden = !showLogin;
   }
 
   function updateView(nextView) {
@@ -124,7 +113,6 @@
     els.navItems.forEach((nav) => {
       nav.classList.toggle("active", nav.dataset.view === nextView);
     });
-
     const pageMap = {
       dashboard: "Dashboard",
       menu: "Manajemen Menu",
@@ -142,8 +130,6 @@
     merged.showAbout = merged.showAbout !== false;
     merged.showMenu = merged.showMenu !== false;
     merged.showContact = merged.showContact !== false;
-    merged.contactBusiness = merged.contactBusiness || merged.businessInfo || DEFAULT_SETTINGS.contactBusiness;
-    merged.businessInfo = merged.businessInfo || merged.contactBusiness || DEFAULT_SETTINGS.contactBusiness;
     merged.revision = Number(merged.revision || 0);
     return merged;
   }
@@ -153,10 +139,8 @@
     const candidateId = String(raw.id || raw.productId || raw.slug || "").trim();
     const candidateName = String(raw.name || raw.title || raw.menuName || raw.productName || "").trim();
     if (!candidateId && !candidateName) return null;
-
     const price = Number(raw.price ?? raw.harga ?? raw.base ?? 0);
     const active = raw.active !== false && raw.isActive !== false && raw.status !== "archived" && raw.status !== "inactive";
-
     return {
       id: candidateId || candidateName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
       name: candidateName,
@@ -175,74 +159,62 @@
     formKeys.forEach((key) => {
       const field = document.getElementById(key);
       if (!field) return;
-
       if (field.type === "checkbox") settings[key] = Boolean(field.checked);
       else if (field.type === "color") settings[key] = field.value || "#000000";
       else settings[key] = field.value ?? "";
     });
-
     return normalizeSettings(settings);
   }
 
   function applySettingsToForm(settings) {
     const safe = normalizeSettings(settings);
     state.settings = safe;
-
     formKeys.forEach((key) => {
       const field = document.getElementById(key);
       if (!field) return;
       if (field.type === "checkbox") field.checked = Boolean(safe[key]);
       else field.value = safe[key] ?? "";
     });
-
     renderPreview();
   }
 
   function resetProductEditor() {
     state.editingProductId = null;
-    if (els.productForm) els.productForm.reset();
-    if (els.productName) els.productName.value = "";
-    if (els.productCategory) els.productCategory.value = "";
-    if (els.productPrice) els.productPrice.value = "";
-    if (els.productDescription) els.productDescription.value = "";
-    if (els.productImage) els.productImage.value = "";
-    if (els.productActive) els.productActive.checked = true;
-    if (els.productAvailable) els.productAvailable.checked = true;
-    if (els.productEditorTitle) els.productEditorTitle.textContent = "Tambah menu";
+    els.productForm.reset();
+    els.productName.value = "";
+    els.productCategory.value = "";
+    els.productPrice.value = "";
+    els.productDescription.value = "";
+    els.productImage.value = "";
+    els.productActive.checked = true;
+    els.productAvailable.checked = true;
+    els.productEditorTitle.textContent = "Tambah menu";
   }
 
   function renderDashboard() {
     const activeCount = state.products.filter((item) => item.active).length;
     const inactiveCount = state.products.length - activeCount;
     const backendStatus = state.sessionValid ? "Aktif" : "Belum login";
-
     if (els.statMenuCount) els.statMenuCount.textContent = String(state.products.length);
     if (els.statActiveCount) els.statActiveCount.textContent = String(activeCount);
     if (els.statInactiveCount) els.statInactiveCount.textContent = String(inactiveCount);
     if (els.statBackend) els.statBackend.textContent = backendStatus;
-
     const summary = [
       { label: "Homepage", value: state.settings.heroTitle || "Judul default" },
       { label: "About Us", value: state.settings.aboutTitle || "Tentang SANDWHEAT" },
       { label: "Kontak", value: state.settings.contactPhone || "08118481107" },
       { label: "Footer", value: state.settings.footerText || "SANDWHEAT" }
     ];
-
-    if (els.dashboardSummary) {
-      els.dashboardSummary.innerHTML = summary.map((row) => `
-        <div class="summary-item"><span>${row.label}</span><strong>${row.value}</strong></div>
-      `).join("");
-    }
+    els.dashboardSummary.innerHTML = summary.map((row) => `
+      <div class="summary-item"><span>${row.label}</span><strong>${row.value}</strong></div>
+    `).join("");
   }
 
   function renderProducts() {
-    if (!els.productList) return;
-
     if (!state.products.length) {
       els.productList.innerHTML = '<div class="panel-card"><p>Belum ada menu. Tambahkan produk baru untuk mulai.</p></div>';
       return;
     }
-
     els.productList.innerHTML = state.products.map((product) => `
       <div class="product-tile">
         <img class="product-thumb" src="${product.image || "https://images.unsplash.com/photo-1528735602780-2552fd4c4c?auto=format&fit=crop&w=900&q=80"}" alt="${product.name}" />
@@ -264,26 +236,23 @@
         const { action, id } = button.dataset;
         const product = state.products.find((item) => item.id === id);
         if (!product) return;
-
         if (action === "edit") {
           state.editingProductId = product.id;
-          if (els.productEditorTitle) els.productEditorTitle.textContent = `Edit menu: ${product.name}`;
-          if (els.productName) els.productName.value = product.name || "";
-          if (els.productCategory) els.productCategory.value = product.category || "";
-          if (els.productPrice) els.productPrice.value = product.price || "";
-          if (els.productDescription) els.productDescription.value = product.description || "";
-          if (els.productImage) els.productImage.value = product.image || "";
-          if (els.productActive) els.productActive.checked = Boolean(product.active);
-          if (els.productAvailable) els.productAvailable.checked = Boolean(product.available !== false);
+          els.productEditorTitle.textContent = `Edit menu: ${product.name}`;
+          els.productName.value = product.name || "";
+          els.productCategory.value = product.category || "";
+          els.productPrice.value = product.price || "";
+          els.productDescription.value = product.description || "";
+          els.productImage.value = product.image || "";
+          els.productActive.checked = Boolean(product.active);
+          els.productAvailable.checked = Boolean(product.available !== false);
           updateView("menu");
           return;
         }
-
         if (action === "toggle") {
           await saveProduct({ ...product, active: !product.active, status: !product.active ? "active" : "inactive" });
           return;
         }
-
         if (action === "delete") {
           if (!window.confirm(`Hapus menu "${product.name}"?`)) return;
           await deleteProduct(product.id);
@@ -307,7 +276,7 @@
         </div>
       </div>
     `;
-    if (els.previewFrame) els.previewFrame.innerHTML = preview;
+    els.previewFrame.innerHTML = preview;
   }
 
   async function apiRequest(action, payload = {}, method = "POST") {
@@ -320,74 +289,65 @@
       "Content-Type": "application/json"
     };
 
-    const url = method === "GET"
-      ? `${API_URL}?action=${encodeURIComponent(action)}${token ? `&token=${encodeURIComponent(token)}` : ""}`
-      : API_URL;
+    const url = method === "GET" ? `${API_URL}?action=${encodeURIComponent(action)}${token ? `&token=${encodeURIComponent(token)}` : ""}` : API_URL;
 
     const init = {
       method,
       headers,
-      mode: "cors",
-      credentials: "omit",
       cache: "no-store"
     };
 
     if (method !== "GET") init.body = JSON.stringify(request);
 
-    try {
-      const response = await fetch(url, init);
-      const text = await response.text();
-      if (!text) return { ok: response.ok, status: response.status };
+    const response = await fetch(url, init);
+    const text = await response.text();
 
-      try {
-        return JSON.parse(text);
-      } catch (error) {
-        return { ok: response.ok, raw: text, status: response.status };
-      }
+    if (!text) {
+      return { ok: response.ok, status: response.status, message: response.ok ? "Tidak ada respons dari backend." : `HTTP ${response.status}` };
+    }
+
+    try {
+      const parsed = JSON.parse(text);
+      return parsed && typeof parsed === "object" ? parsed : { ok: response.ok, status: response.status, raw: text };
     } catch (error) {
-      return { ok: false, error: error.message || "Network request failed" };
+      return {
+        ok: false,
+        status: response.status,
+        message: "Respons backend bukan JSON. Periksa apakah URL Apps Script sudah benar dan deployment sudah dipublish.",
+        raw: text.slice(0, 250)
+      };
     }
   }
 
   async function validateSession() {
     const token = readToken();
-    if (!token) {
-      state.sessionValid = false;
-      return false;
-    }
+    if (!token) return false;
 
-    const actions = ["checkSession", "session", "validateSession", "whoami", "cmsSettings"];
+    const actions = ["checkSession", "session", "validateSession", "whoami"];
     for (const action of actions) {
       try {
         const result = await apiRequest(action, {}, "GET");
-        const ok = Boolean(
-          result && (
-            result.ok === true ||
-            result.valid === true ||
-            result.authenticated === true ||
-            result.session === "valid" ||
-            result.user ||
-            (action === "cmsSettings" && (result.settings || result.data))
-          )
-        );
-
-        if (ok) {
+        if (result && (result.ok === true || result.valid === true || result.authenticated === true || result.session === "valid" || result.user)) {
           state.sessionValid = true;
           return true;
         }
-
-        const errorText = String(result?.error || result?.message || result?.code || "").toLowerCase();
-        if (
-          errorText.includes("invalid") ||
-          errorText.includes("expired") ||
-          errorText.includes("forbidden") ||
-          errorText.includes("unauthorized")
-        ) {
-          break;
+        if (result && (result.error || result.message || result.code)) {
+          const normalized = String(result.error || result.message || result.code).toLowerCase();
+          if (normalized.includes("invalid") || normalized.includes("expired") || normalized.includes("forbidden")) break;
         }
       } catch (error) {
-        // ignore and continue checking
+        // ignore and try the next fallback
       }
+    }
+
+    try {
+      const result = await apiRequest("cmsSettings", {}, "GET");
+      if (result && (result.ok === true || result.settings || result.data)) {
+        state.sessionValid = true;
+        return true;
+      }
+    } catch (error) {
+      // if fallback fails, session is not trusted
     }
 
     state.sessionValid = false;
@@ -413,7 +373,6 @@
       state.settings = settings;
       state.products = remoteProducts.map(normalizeProduct).filter(Boolean);
       state.revision = Number(settings.revision || productsResult?.revision || state.revision || 0);
-
       applySettingsToForm(state.settings);
       renderDashboard();
       renderProducts();
@@ -428,7 +387,7 @@
   async function saveSettings() {
     if (!state.sessionValid) {
       setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       return;
     }
 
@@ -437,8 +396,7 @@
     try {
       const result = await apiRequest("saveSettings", { settings: payload, revision: state.revision }, "POST");
       const ok = result && (result.ok === true || result.success === true || result.saved === true || result.status === "ok");
-      if (!ok) throw new Error(result?.error || result?.message || "Server menolak perubahan.");
-
+      if (!ok) throw new Error(result?.error || result?.message || result?.data?.message || "Server menolak perubahan.");
       state.settings = normalizeSettings(payload);
       state.revision = Number(result.revision || state.revision || 0);
       applySettingsToForm(state.settings);
@@ -454,7 +412,7 @@
   async function saveProduct(productInput) {
     if (!state.sessionValid) {
       setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       return;
     }
 
@@ -479,8 +437,7 @@
     try {
       const result = await apiRequest("saveProduct", { product: payload }, "POST");
       const ok = result && (result.ok === true || result.success === true || result.saved === true || result.status === "ok");
-      if (!ok) throw new Error(result?.error || result?.message || "Server menolak simpan menu.");
-
+      if (!ok) throw new Error(result?.error || result?.message || result?.data?.message || "Server menolak simpan menu.");
       state.editingProductId = null;
       resetProductEditor();
       await loadSiteData();
@@ -495,7 +452,7 @@
   async function deleteProduct(productId) {
     if (!state.sessionValid) {
       setStatus("error", "Sesi admin tidak valid. Silakan login kembali.");
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       return;
     }
 
@@ -503,8 +460,7 @@
     try {
       const result = await apiRequest("deleteProduct", { id: productId }, "POST");
       const ok = result && (result.ok === true || result.success === true || result.deleted === true || result.status === "ok");
-      if (!ok) throw new Error(result?.error || result?.message || "Server gagal menghapus menu.");
-
+      if (!ok) throw new Error(result?.error || result?.message || result?.data?.message || "Server gagal menghapus menu.");
       await loadSiteData();
       setStatus("success", "Menu berhasil dihapus.");
     } catch (error) {
@@ -529,19 +485,25 @@
       const result = await apiRequest("login", { email, password }, "POST");
       const token = result?.token || result?.sessionToken || result?.data?.token || result?.data?.sessionToken || "";
       const ok = result && (result.ok === true || result.success === true || result.status === "ok" || Boolean(token));
-      if (!ok) throw new Error(result?.error || result?.message || "Kredensial tidak valid.");
+
+      if (!ok) {
+        throw new Error(result?.message || result?.error || result?.data?.message || result?.data?.error || "Kredensial tidak valid.");
+      }
+      if (!token) {
+        throw new Error("Login berhasil tetapi token tidak dikembalikan oleh backend.");
+      }
 
       writeToken(token || readToken());
       const verified = await validateSession();
       if (!verified) throw new Error("Backend belum mengonfirmasi sesi yang valid.");
 
       state.sessionValid = true;
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       setStatus("success", "Login berhasil.");
       await loadSiteData();
     } catch (error) {
       clearSession();
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       setStatus("error", `Login gagal: ${error.message}`);
     } finally {
       setLoading(false, "");
@@ -553,43 +515,37 @@
     try {
       if (token) await apiRequest("logout", { token }, "POST");
     } catch (error) {
-      // ignore and clear local session
+      // ignore server-side logout error and clear local session
     } finally {
       clearSession();
       state.sessionValid = false;
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       setStatus("success", "Anda telah logout.");
     }
   }
 
   function bindEvents() {
-    if (els.navItems.length) {
-      els.navItems.forEach((nav) => nav.addEventListener("click", () => updateView(nav.dataset.view)));
-    }
-
-    if (els.saveBtn) els.saveBtn.addEventListener("click", saveSettings);
-    if (els.cancelBtn) els.cancelBtn.addEventListener("click", () => applySettingsToForm(state.settings));
-    if (els.logoutBtn) els.logoutBtn.addEventListener("click", logout);
-    if (els.loginForm) els.loginForm.addEventListener("submit", login);
-    if (els.newMenuBtn) els.newMenuBtn.addEventListener("click", () => { resetProductEditor(); updateView("menu"); });
-    if (els.resetProductBtn) els.resetProductBtn.addEventListener("click", resetProductEditor);
-
-    if (els.productForm) {
-      els.productForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const payload = {
-          id: state.editingProductId || String(Date.now()),
-          name: els.productName.value.trim(),
-          category: els.productCategory.value.trim(),
-          description: els.productDescription.value.trim(),
-          image: els.productImage.value.trim(),
-          price: Number(els.productPrice.value || 0),
-          active: els.productActive.checked,
-          available: els.productAvailable.checked
-        };
-        await saveProduct(payload);
-      });
-    }
+    els.navItems.forEach((nav) => nav.addEventListener("click", () => updateView(nav.dataset.view)));
+    els.saveBtn.addEventListener("click", saveSettings);
+    els.cancelBtn.addEventListener("click", () => applySettingsToForm(state.settings));
+    els.logoutBtn.addEventListener("click", logout);
+    els.loginForm.addEventListener("submit", login);
+    els.newMenuBtn.addEventListener("click", () => { resetProductEditor(); updateView("menu"); });
+    els.resetProductBtn.addEventListener("click", resetProductEditor);
+    els.productForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const payload = {
+        id: state.editingProductId || String(Date.now()),
+        name: els.productName.value.trim(),
+        category: els.productCategory.value.trim(),
+        description: els.productDescription.value.trim(),
+        image: els.productImage.value.trim(),
+        price: Number(els.productPrice.value || 0),
+        active: els.productActive.checked,
+        available: els.productAvailable.checked
+      };
+      await saveProduct(payload);
+    });
   }
 
   async function bootstrap() {
@@ -600,7 +556,7 @@
     renderProducts();
     updateView("dashboard");
 
-    toggleLoginScreen(false);
+    toggleLoginScreen(true);
     setStatus("success", "Panel siap. Silakan login admin.");
 
     const token = readToken();
@@ -611,18 +567,17 @@
       const valid = await validateSession();
       if (!valid) {
         clearSession();
-        toggleLoginScreen(false);
+        toggleLoginScreen(true);
         setStatus("error", "Sesi kedaluwarsa atau tidak valid. Silakan login kembali.");
         return;
       }
-
       state.sessionValid = true;
-      toggleLoginScreen(true);
+      toggleLoginScreen(false);
       setStatus("success", "Sesi valid. Dashboard aktif.");
       await loadSiteData();
     } catch (error) {
       clearSession();
-      toggleLoginScreen(false);
+      toggleLoginScreen(true);
       setStatus("error", `Validasi sesi gagal: ${error.message}`);
     } finally {
       setLoading(false, "");
